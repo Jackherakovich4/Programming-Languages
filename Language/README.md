@@ -29,14 +29,12 @@ Infinite loops: achieved by placing the infinity symbol "∞", then using questi
 if statements are created with the symbol "›" (option shift 4) and else if are created with "»" (option shift vertical bar), and elses are made with "‹" (option shift 3). As in java, following ifs and else ifs you must include parameters in parathenses, and follow these with the question mark symbols as in functions and loops.
 
 ``` 
-{
 › (x==10) 
 x=x+5?
    » (x<10) ¿
 x=x-5?
    ‹ ¿
 x=y?
-} 
 ```
 
 ## Operators
