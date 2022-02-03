@@ -1,75 +1,89 @@
 //Jack Herakovich https://github.com/JackHerakovich/Programming-Languages/tree/main/Language
 program ::=statementList;
+
 statementList ::= statement
                 | statement statementList;
+
 statement ::= function
             | variableInitialization
-            | forLoop
             | assignment
+            | forLoop
             | whileLoop
             | infiniteLoop
-            | ifStatement
             | expression
-            | elseStatement
+            | ifStatement
             | arrayInitialization
             | arrayListInitialization
             | functionCall;
 
 variableInitialization::="¡" IDENTIFIER "=" expression;
-expression::= unary operator unary
-            | unary operator
-            | expression operator unary
-            | expression operator expression
-            | unary operator expression
-            | unary;
 
-forLoop::= "≈" "("variableInitialization";" comparison";" expression ")" block;
+expression::= primary binaryOperator primary
+            | primary unaryOperator
+            | unaryOperator primary
+            | primary binaryOperator expression
+            | primary;
+
+forLoop::= "≈" "(" variableInitialization ";" comparison ";" expression ")" block;
+
 whileLoop::= "◊" "(" comparison ")" block;
+
 infiniteLoop::= "∞" block;
-ifStatement ::= "›" "("comparison")" block
-              | "›" "("comparison")" block "»" ifStatement
-              | "›" "("comparison")" block elseStatement
-              | "›" "("comparison")" block "»" ifStatement elseStatement;
+
+ifStatement ::= "›" "(" comparison ")" block
+              | "›" "(" comparison ")" block "»" ifStatement
+              | "›" "(" comparison ")" block elseStatement
+              | "›" "(" comparison ")" block "»" ifStatement elseStatement;
+
 elseStatement::= "‹" block;
-function::= "∏" IDENTIFIER "("parameter")" block;
-parameter::= variable
-           | variable","parameter
-           | function
-           | ;
+
+function::= "∏" IDENTIFIER "(" parameter? ")" block;
+
+parameter::= VARIABLE
+           | VARIABLE "," parameter
+           | function;
+
 block::="¿" statementList "?";
-comparison::=unary comparator unary
-            | comparison logicSymbol comparison;
+
+comparison::=primary comparator primary
+            | boolean;
+
 comparator::= "=="
             | ">"
             | "<"
             | "≥"
             | "≤";
-operator::= "++"
-           | "--"
-           | "+"
+
+unaryOperator::= "++"
+               | "-"
+               | "--";
+
+
+binaryOperator::=  "+"
            | "-"
            | "*"
            | "/";
-arrayInitialization::= "Å" "("expression")" IDENTIFIER;
-arrayListInitialization::= "Ålist" "("")" IDENTIFIER;
-logicSymbol::= "|"
-             | "&"
-             | "!";
-functionCall::= indentifier"("functionInput")";
-functionInput::= unary
-                | unary","functionInput
-                | ;
-assignment::= variable "=" expression
-            | variable operator;
-variable::= INTEGER
+
+arrayInitialization::= "Å" "(" expression ")" IDENTIFIER;
+
+arrayListInitialization::= "Ålist" "(" ")" IDENTIFIER;
+
+functionCall::= IDENTIFIER "(" functionInput? ")";
+
+functionInput::= primary
+               | primary "," functionInput;
+
+assignment::= VARIABLE "=" expression
+            | VARIABLE unaryOperator;
+
+boolean::= "true"
+         | "false";
+
+primary ::= VARIABLE
+          | INTEGER
           | STRING
           | DOUBLE
           | CHARACTER
-          | boolean
-          | FLOAT;
-boolean::= TRUE
-         | FALSE;
-unary ::= variable
-        | NUMBER
-        | expression;
+          | boolean;
 
+printStatement::= "print" STRING
