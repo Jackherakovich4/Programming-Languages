@@ -1,3 +1,4 @@
+//Jack Herakovich https://github.com/JackHerakovich/Programming-Languages/tree/main/Language
 program ::=statementList;
 statementList ::= statement
                 | statement statementList;
@@ -5,9 +6,15 @@ statement ::= function
             | variableInitialization
             | forLoop
             | assignment
-            |
-assignment::= variable "=" expression
-            | variable operator;
+            | whileLoop
+            | infiniteLoop
+            | ifStatement
+            | expression
+            | elseStatement
+            | arrayInitialization
+            | arrayListInitialization
+            | functionCall;
+
 variableInitialization::="¡" IDENTIFIER "=" expression;
 expression::= unary operator unary
             | unary operator
@@ -15,6 +22,45 @@ expression::= unary operator unary
             | expression operator expression
             | unary operator expression
             | unary;
+
+forLoop::= "≈" "("variableInitialization";" comparison";" expression ")" block;
+whileLoop::= "◊" "(" comparison ")" block;
+infiniteLoop::= "∞" block;
+ifStatement ::= "›" "("comparison")" block
+              | "›" "("comparison")" block "»" ifStatement
+              | "›" "("comparison")" block elseStatement
+              | "›" "("comparison")" block "»" ifStatement elseStatement;
+elseStatement::= "‹" block;
+function::= "∏" IDENTIFIER "("parameter")" block;
+parameter::= variable
+           | variable","parameter
+           | function
+           | ;
+block::="¿" statementList "?";
+comparison::=unary comparator unary
+            | comparison logicSymbol comparison;
+comparator::= "=="
+            | ">"
+            | "<"
+            | "≥"
+            | "≤";
+operator::= "++"
+           | "--"
+           | "+"
+           | "-"
+           | "*"
+           | "/";
+arrayInitialization::= "Å" "("expression")" IDENTIFIER;
+arrayListInitialization::= "Ålist" "("")" IDENTIFIER;
+logicSymbol::= "|"
+             | "&"
+             | "!";
+functionCall::= indentifier"("functionInput")";
+functionInput::= unary
+                | unary","functionInput
+                | ;
+assignment::= variable "=" expression
+            | variable operator;
 variable::= INTEGER
           | STRING
           | DOUBLE
@@ -24,26 +70,6 @@ variable::= INTEGER
 boolean::= TRUE
          | FALSE;
 unary ::= variable
-        | NUMBER;
-function::= "∏" IDENTIFIER "("")" block
-          | "∏" IDENTIFIER "("parameter")" block;
-parameter::= boolean
-           | comparison;
-block::="¿" statementList "?";
-comparison::=unary comparator unary;
-comparator::= "=="
-            | ">"
-            | "<"
-            | "≥"
-            | "≤"
-operator::= "++"
-           | "--"
-           | "+"
-           | "-"
-           | "*"
-           | "/";
-array::= "Å" "("expression")" IDENTIFIER;
-arrayList::= "Ålist" "("")" IDENTIFIER;
-forLoop::= "≈" "("variableInitialization";" comparison";" expression ")" block;
-whileLoop::= "◊" "(" comparison ")" block;
-infiniteLoop::= "∞" block;
+        | NUMBER
+        | expression;
+
