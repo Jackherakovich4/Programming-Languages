@@ -1,1 +1,30 @@
-program ::=statementList*
+program ::=statementList;
+statementList ::= statement
+                | statement statementList;
+statement ::=
+variable::="¡" IDENTIFIER expression;
+expression::= unary operator unary
+            | unary operator
+            | expression operator unary
+            | expression operator expression
+            | unary operator expression;
+
+unary ::= variable
+        | NUMBER;
+function::= "∏" IDENTIFIER "("")" block
+          | "∏" IDENTIFIER "("parameter")" block;
+parameter::= boolean
+           | comparison;
+block::="¿" statementList "?";
+comparison::=unary comparator unary;
+comparator::= "="
+            | ">"
+            | "<"
+            | "≥"
+            | "≤"
+operator::= "++"
+           | "--"
+           | "+"
+           | "-"
+           | "*"
+           | "/";
