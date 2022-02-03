@@ -1,14 +1,28 @@
 program ::=statementList;
 statementList ::= statement
                 | statement statementList;
-statement ::=
-variable::="¡" IDENTIFIER expression;
+statement ::= function
+            | variableInitialization
+            | forLoop
+            | assignment
+            |
+assignment::= variable "=" expression
+            | variable operator;
+variableInitialization::="¡" IDENTIFIER "=" expression;
 expression::= unary operator unary
             | unary operator
             | expression operator unary
             | expression operator expression
-            | unary operator expression;
-
+            | unary operator expression
+            | unary;
+variable::= INTEGER
+          | STRING
+          | DOUBLE
+          | CHARACTER
+          | boolean
+          | FLOAT;
+boolean::= TRUE
+         | FALSE;
 unary ::= variable
         | NUMBER;
 function::= "∏" IDENTIFIER "("")" block
@@ -17,7 +31,7 @@ parameter::= boolean
            | comparison;
 block::="¿" statementList "?";
 comparison::=unary comparator unary;
-comparator::= "="
+comparator::= "=="
             | ">"
             | "<"
             | "≥"
@@ -28,3 +42,8 @@ operator::= "++"
            | "-"
            | "*"
            | "/";
+array::= "Å" "("expression")" IDENTIFIER;
+arrayList::= "Ålist" "("")" IDENTIFIER;
+forLoop::= "≈" "("variableInitialization";" comparison";" expression ")" block;
+whileLoop::= "◊" "(" comparison ")" block;
+infiniteLoop::= "∞" block;
