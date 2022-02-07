@@ -5,9 +5,9 @@
 #### made by Jack Herakovich in spring 2022 at The Westminster Schools.
 
 ## Variables
-Variables in this language are declared/initialized using the upside down exclamaiton mark symbol "¡". You first announce you are creating a variable, then give it a name and value (no equals sign necessary). For example:
+Variables in this language are declared/initialized using the upside down exclamaiton mark symbol "¡". You first announce you are creating a variable, then give it a name and assign a value with "=". For example:
 
-``` ¡x10```
+``` ¡x=10```
 
 ## Functions
 Functions are created by announcing them with the capital pi symbol "∏". You first announce the function, then give it a name, then parameters in parantheses, then finally an upside down question mark to begin the function "¿" the function is then ended by the question mark symbol "?" (as curly braces do in java).
@@ -20,7 +20,9 @@ to call a function type its name then parameters in parantheses, just like java.
 
 ## Control Flow
 For loops: achieved by placing approximately equal to symbol "≈", then use parantheses to set what will be iterated, what it iterates to, and how it iterates, then using question marks to define what will be looped.
+
 While loops: achieved by placing the diamond symbol "◊", then use parantheses to set what will be iterated, what it iterates to, and how it iterates, then using question marks to define what will be looped.
+
 Infinite loops: achieved by placing the infinity symbol "∞", then using question marks to define what will be looped.
 (sections inside of parantheses function like java)
 
@@ -38,7 +40,22 @@ x=y?
 ```
 
 ## Operators
-This language solely uses unary operators, and to keep it simple the operators are the same as in Java. + to add, - to subtract, / to divide, and * to multiply.
+This is an infix language, so the binary operators sit between the two values being combined.
+|Unary Operators|Effect|
+|---------|------|
+|++ |adds one|
+|--|subtracts one|
+|-|makes the number following it negative|
+
+|Binary Operators|Effect|
+|---------|------|
+|+ |addition|
+|-|subtraction|
+|*|multiplication|
+|/| division|
+|%| modulus (gives remainder)|
+
+
 
 ## Comparators
 uses = for assignment, and == for comparison. 
@@ -55,5 +72,7 @@ ArrayLists are created simply by typing "Ålist", then empty parantheses, then a
 The commands for access and modification are the same as above.
 
 ## Built-in Functions
-Not sure yet, want to have some fun ones here though.
+print statement: the word print followed by the expression to be printed inside of parantheses.
+
+```print (whatever should be printed)```
 
