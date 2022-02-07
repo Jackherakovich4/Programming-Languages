@@ -62,6 +62,7 @@ unaryOperator::= "++"
 binaryOperator::=  "+"
            | "-"
            | "*"
+           | "%"
            | "/";
 
 arrayInitialization::= "Å" "(" expression ")" IDENTIFIER;
@@ -86,4 +87,4 @@ primary ::= VARIABLE
           | CHARACTER
           | boolean;
 
-printStatement::= "print" STRING
+printStatement::= "print" "("expression")"
