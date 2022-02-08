@@ -16,7 +16,7 @@ statement ::= function
             | arrayListInitialization
             | functionCall;
 
-variableInitialization::="¡" IDENTIFIER "=" expression;
+
 
 expression::= primary binaryOperator primary
             | primary unaryOperator
@@ -24,11 +24,15 @@ expression::= primary binaryOperator primary
             | primary binaryOperator expression
             | primary;
 
+//loops
+
 forLoop::= "≈" "(" variableInitialization ";" comparison ";" expression ")" block;
 
 whileLoop::= "◊" "(" comparison ")" block;
 
 infiniteLoop::= "∞" block;
+
+//if statements
 
 ifStatement ::= "›" "(" comparison ")" block
               | "›" "(" comparison ")" block "»" ifStatement
@@ -37,6 +41,8 @@ ifStatement ::= "›" "(" comparison ")" block
 
 elseStatement::= "‹" block;
 
+//functions
+
 function::= "∏" IDENTIFIER "(" parameter? ")" block;
 
 parameter::= VARIABLE
@@ -44,6 +50,13 @@ parameter::= VARIABLE
            | function;
 
 block::="¿" statementList "?";
+
+functionCall::= IDENTIFIER "(" functionInput? ")";
+
+functionInput::= primary
+               | primary "," functionInput;
+
+//operators+comparison
 
 comparison::=primary comparator primary
             | boolean;
@@ -65,17 +78,20 @@ binaryOperator::=  "+"
            | "%"
            | "/";
 
+//arrays
+
 arrayInitialization::= "Å" "(" expression ")" IDENTIFIER;
 
 arrayListInitialization::= "Ålist" "(" ")" IDENTIFIER;
 
-functionCall::= IDENTIFIER "(" functionInput? ")";
+//variables
 
-functionInput::= primary
-               | primary "," functionInput;
+variableInitialization::="¡" IDENTIFIER "=" expression;
 
 assignment::= VARIABLE "=" expression
             | VARIABLE unaryOperator;
+
+//primaries
 
 boolean::= "true"
          | "false";
@@ -86,5 +102,7 @@ primary ::= VARIABLE
           | DOUBLE
           | CHARACTER
           | boolean;
+
+//built-ins
 
 printStatement::= "print" "("expression")"
