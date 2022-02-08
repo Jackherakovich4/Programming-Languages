@@ -1,4 +1,4 @@
-# Welcome to the lang
+# Welcome to FunAlpha
 
 ## The programming language based on under represented characters.
 
