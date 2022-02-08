@@ -1,4 +1,5 @@
 //Jack Herakovich https://github.com/JackHerakovich/Programming-Languages/tree/main/Language
+//basic grammar needs
 program ::=statementList;
 
 statementList ::= statement
@@ -15,8 +16,6 @@ statement ::= function
             | arrayInitialization
             | arrayListInitialization
             | functionCall;
-
-
 
 expression::= primary binaryOperator primary
             | primary unaryOperator
@@ -70,7 +69,6 @@ comparator::= "=="
 unaryOperator::= "++"
                | "-"
                | "--";
-
 
 binaryOperator::=  "+"
            | "-"
