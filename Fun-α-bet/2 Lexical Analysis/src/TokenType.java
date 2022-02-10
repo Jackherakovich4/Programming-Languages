@@ -1,7 +1,5 @@
 public enum TokenType {
     // Keywords
-    Å,
-    ÅLIST,
     INTEGER_KEYWORD,
     STRING_KEYWORD,
 
@@ -32,6 +30,7 @@ public enum TokenType {
     EQUALSCOMPARISON,
 
     //Literals
+    INTEGER,
     IDENTIFIER,
     NUMBER,
     STRING,

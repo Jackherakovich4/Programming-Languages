@@ -29,7 +29,7 @@ public class Lexeme {
         this.lineNumber=lineNumber;
         this.STRING=STRING;
     }
-
+    /**
     public Lexeme(TokenType type, int lineNumber, String IDENTIFIER) {
         this.type=type;
         this.lineNumber=lineNumber;
@@ -47,6 +47,7 @@ public class Lexeme {
         this.lineNumber=lineNumber;
         this.LITERAL=LITERAL;
     }
+     */
 
     // --------------- Getters & Setters ---------------
 
@@ -109,17 +110,17 @@ public class Lexeme {
     // --------------- toString ---------------
     public String toString() {
         if (this.getIDENTIFIER() != null) {
-            return "this is a Lexeme of type " + type + ", in line number " lineNumber + ", and of value " IDENTIFIER;
+            return "this is a Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + IDENTIFIER;
         } else if (this.getSTRING() != null) {
-            return "this is a Lexeme of type " + type + ", in line number " lineNumber + ", and of value " STRING;
-        } else if (this.getNUMBER() != null) {
-            return "this is a Lexeme of type " + type + ", in line number " lineNumber + ", and of value " NUMBER;
+            return "this is a Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + STRING;
+        } else if (!(this.getNUMBER() != null) {
+            return "this is a Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + NUMBER;
         } else if (this.getKEYWORD() != null) {
-            return "this is a Lexeme of type " + type + ", in line number " lineNumber + ", and of value " KEYWORD;
+            return "this is a Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + KEYWORD;
         } else if (this.getLITERAL() != null) {
-            return "this is a Lexeme of type " + type + ", in line number " lineNumber + ", and of value " LITERAL;
-        } else {
-            return "this is a Lexeme of type " + type + ", in line number " lineNumber;
+            return "this is a Lexeme of type " + type + ", in line number " + lineNumber + ", and of value "+  LITERAL;
+         } else {
+            return "this is a Lexeme of type " + type + ", in line number " + lineNumber;
         }
 
     }
