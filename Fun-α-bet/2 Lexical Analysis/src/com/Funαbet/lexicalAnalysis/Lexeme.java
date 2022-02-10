@@ -115,7 +115,7 @@ public class Lexeme {
             return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + IDENTIFIER;
         } else if (this.getSTRING() != null) {
             return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + STRING;
-        } else if (!(this.getNUMBER() != null) {
+        } else if (this.getNUMBER() != null) {
             return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + NUMBER;
         } else if (this.getKEYWORD() != null) {
             return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + KEYWORD;
