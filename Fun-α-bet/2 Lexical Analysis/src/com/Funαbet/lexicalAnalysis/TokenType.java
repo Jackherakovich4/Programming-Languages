@@ -1,3 +1,5 @@
+package com.Funαbet.lexicalAnalysis;
+
 public enum TokenType {
     // Keywords
     INTEGER_KEYWORD,

@@ -1,3 +1,5 @@
+package com.Funαbet.lexicalAnalysis;
+
 public class LexerTest {
 
     public static void main(String[] args) {
