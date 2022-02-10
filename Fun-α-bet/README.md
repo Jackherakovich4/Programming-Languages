@@ -1,6 +1,6 @@
-# Welcome to the lang
+# Welcome to FunAlpha
 
-## The programming language based on under represented characters.
+## The programming language based on under represented, more fun, characters.
 
 #### made by Jack Herakovich in spring 2022 at The Westminster Schools.
 
