@@ -1,12 +1,50 @@
 package com.Funαbet.lexicalAnalysis;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 import static com.Funαbet.lexicalAnalysis.TokenType.*;
 
 public class LexerTest {
 
-    public static void main(String[] args) {
-        Lexeme ten= new Lexeme(NUMBER, 1, 10);
-        System.out.println(ten);
+    public static void main(String[] args) throws IOException {
+       try {
+           if (singlePathProvided(args)) runFile(args[0]);
+           else {
+               System.out.println("Usage: Funαbet [path to .alpha file]");
+               System.exit(64);
+           }
+       } catch (IOException exception) {
+           throw new IOException(exception.toString());
+       }
     }
+
+    public static boolean singlePathProvided(String [] x) {
+        return x.length==1;
+    }
+
+
+    public static void runFile(String path) throws IOException {
+        String sourceCode = getSourceCodeFromFile(path);
+        run(sourceCode);
+        //if (hadSyntaxError) System.exit(65);
+        //if (hadRuntimeError) System.exit(70);
+    }
+
+    private static String getSourceCodeFromFile(String path) throws IOException {
+        byte[] bytes= Files.readAllBytes(Paths.get(path));
+        return new String(bytes, Charset.defaultCharset());
+    }
+
+    public static void run(String sourceCode) {
+        Lexer lexer = new Lexer(sourceCode);
+        ArrayList<Lexeme> lexemes = lexer.lex();
+        lexer.printLexemes();
+    }
+
+
 
 }

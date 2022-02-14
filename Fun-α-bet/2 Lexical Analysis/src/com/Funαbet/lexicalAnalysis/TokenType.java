@@ -4,6 +4,9 @@ public enum TokenType {
     // Keywords
     INTEGER_KEYWORD,
     STRING_KEYWORD,
+    Ø,
+    Ò,
+    EOF,
 
 
 
