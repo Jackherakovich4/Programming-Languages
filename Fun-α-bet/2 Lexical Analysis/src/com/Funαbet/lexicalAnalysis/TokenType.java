@@ -36,8 +36,8 @@ public enum TokenType {
 
     //Literals
     INTEGER,
+    DOUBLE,
     IDENTIFIER,
-    NUMBER,
     STRING,
 
 

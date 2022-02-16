@@ -129,8 +129,103 @@ public Lexer(String source) {
     // Smaller lexing functions called by lex()
 
     private Lexeme getNextLexeme() {
-    
+    char c = advance();
+    switch (c) {
+        case ' ':
+        case '\n':
+        case '\r':
+        case '\t':
+            return null;
+            //single char lexemes
+        case '¡':
+            return new Lexeme(TokenType.UPSIDEDOWN_EXCLAMATION, lineNumber);
+        case ';':
+            return new Lexeme(TokenType.SEMI, lineNumber);
+        case '(':
+            return new Lexeme(TokenType.O_PAREN, lineNumber);
+        case ')':
+            return new Lexeme(TokenType.C_PAREN, lineNumber);
+        case '?':
+            return new Lexeme(TokenType.QUESTION, lineNumber);
+        case '¿':
+            return new Lexeme(TokenType.UPSIDEDOWN_QUESTION, lineNumber);
+        case '∏':
+            return new Lexeme(TokenType.CAPITAL_PI, lineNumber);
+        case '>':
+            return new Lexeme(TokenType.GREATER_THAN, lineNumber);
+        case '≥':
+            return new Lexeme(TokenType.GREATER_THAN_OR_EQUAL, lineNumber);
+        case '<':
+            return new Lexeme(TokenType.LESS_THAN, lineNumber);
+        case '≤':
+            return new Lexeme(TokenType.LESS_THAN_OR_EQUAL, lineNumber);
+        case '/':
+            return new Lexeme(TokenType.DIVIDE, lineNumber);
+        case '*':
+            return new Lexeme(TokenType.TIMES, lineNumber);
+        case '%':
+            return new Lexeme(TokenType.MODULUS, lineNumber);
+            //one or two char
+        case '=':
+            if (match('=')) return new Lexeme(TokenType.EQUALSCOMPARISON, lineNumber);
+            else new Lexeme(TokenType.EQUALSASSIGN, lineNumber);
+        case '+':
+            if (match('+')) return new Lexeme(TokenType.PLUSPLUS, lineNumber);
+            else new Lexeme(TokenType.PLUS, lineNumber);
+        case '-':
+            if (match('-')) return new Lexeme(TokenType.MINUSMINUS, lineNumber);
+            else new Lexeme(TokenType.MINUS, lineNumber);
+            //Strings
+        case '"':
+            return lexString();
+
+        default:
+            if (isDigit(c)) return lexNumber();
+            else if (isAlpha(c)) return lexIdentifierOrKeyword();
+            else Funαbet.error(lineNumber, "Unexpected Character: " +c);
+
+
     }
+    }
+
+    private Lexeme lexNumber() {
+    boolean isInteger=true;
+    while (isDigit(peek())) advance();
+    if (peek()=='.') {
+        if (!isDigit(peekNext())) Funαbet.error(lineNumber, "Improper creation of real number (ends in decimal point)");
+        isInteger=false;
+        advance();
+        while (isDigit(peek())) advance();
+    }
+    String numberString=source.substring(startOfCurrentLexeme, currentPosition);
+    if (isInteger) {
+        int number = Integer.parseInt(numberString);
+        return new Lexeme(TokenType.INTEGER,  lineNumber, number);
+    } else {
+        double number = Double.parseDouble(numberString);
+        return new Lexeme(TokenType.DOUBLE, lineNumber, number);
+    }
+    }
+
+    private Lexeme lexString() {
+        while (!(peek()=='"')) if (isAtEnd()) Funαbet.error(lineNumber, "unfinished string";
+        else advance();
+        return new Lexeme(TokenType.STRING, lineNumber, source.substring(startOfCurrentLexeme,currentPosition));
+    }
+
+    private Lexeme lexIdentifierOrKeyword() {
+        while (isAlphaNumeric(peek())) advance();
+        String text = source.substring(startOfCurrentLexeme, currentPosition);
+        TokenType type = keywords.get(text);
+        if (type==null) {
+            return new Lexeme(TokenType.IDENTIFIER, lineNumber, text);
+        } else {
+            return new Lexeme(type, lineNumber);
+        }
+    }
+
+
+
 
 
     // Printing
