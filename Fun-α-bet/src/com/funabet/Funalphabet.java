@@ -1,4 +1,8 @@
-package com.Funαbet.lexicalAnalysis;
+package com.funabet;
+
+
+import com.funabet.lexicalAnalysis.Lexeme;
+import com.funabet.lexicalAnalysis.Lexer;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -6,20 +10,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import static com.Funαbet.lexicalAnalysis.TokenType.*;
-
-public class LexerTest {
+public class Funalphabet {
 
     public static void main(String[] args) throws IOException {
-       try {
-           if (singlePathProvided(args)) runFile(args[0]);
-           else {
-               System.out.println("Usage: Funαbet [path to .alpha file]");
-               System.exit(64);
-           }
-       } catch (IOException exception) {
-           throw new IOException(exception.toString());
-       }
+        try {
+            if (singlePathProvided(args)) runFile(args[0]);
+            else {
+                System.out.println("Usage: Funαbet [path to .alpha file]");
+                System.exit(64);
+            }
+        } catch (IOException exception) {
+            throw new IOException(exception.toString());
+        }
     }
 
     public static boolean singlePathProvided(String [] x) {
@@ -44,7 +46,5 @@ public class LexerTest {
         ArrayList<Lexeme> lexemes = lexer.lex();
         lexer.printLexemes();
     }
-
-
 
 }

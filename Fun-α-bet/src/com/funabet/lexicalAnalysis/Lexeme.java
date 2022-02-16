@@ -1,10 +1,8 @@
-package com.Funαbet.lexicalAnalysis;
-
-import static com.Funαbet.lexicalAnalysis.TokenType.*;
+package com.funabet.lexicalAnalysis;
 
 public class Lexeme {
     // --------------- Instance Variables ---------------
-    // Every com.Funαbet.lexicalAnalysis.Lexeme has both of these:
+    // Every com.Funαbet.com.funalphabet.lexicalAnalysis.com.funabet.lexicalAnalysis.Lexeme has both of these:
     private TokenType type;
     private int lineNumber;
 
@@ -81,20 +79,20 @@ public class Lexeme {
     // --------------- toString ---------------
     public String toString() {
         if (!(this.getBoolval()==(null))) {
-            return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + this.getBoolval();
+            return "type " + type + ", in line number " + lineNumber + ", and of value " + this.getBoolval();
         } else if (!(this.getRealval()==(null))) {
-            return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + this.getRealval();
+            return "type " + type + ", in line number " + lineNumber + ", and of value " + this.getRealval();
         } else if (!(this.getStringval()==(null))) {
-            return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value " + this.getStringval();
+            return "type " + type + ", in line number " + lineNumber + ", and of value " + this.getStringval();
         } else if (!(this.getNumberval()==(null))) {
-            return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber + ", and of value "+  this.getNumberval();
+            return "type " + type + ", in line number " + lineNumber + ", and of value "+  this.getNumberval();
          } else {
-            return "this is a com.Funαbet.lexicalAnalysis.Lexeme of type " + type + ", in line number " + lineNumber;
+            return " type " + type + ", in line number " + lineNumber;
         }
 
     }
     // TODO - Write a basic toString method that prints
-    //  the com.Funαbet.lexicalAnalysis.Lexeme's type, line number, and value (if there is one)
+    //  the com.Funαbet.com.funalphabet.lexicalAnalysis.com.funabet.lexicalAnalysis.Lexeme's type, line number, and value (if there is one)
 
 
 

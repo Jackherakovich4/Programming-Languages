@@ -1,4 +1,4 @@
-package com.Funαbet.lexicalAnalysis;
+package com.funabet.lexicalAnalysis;
 
 public enum TokenType {
     // Keywords

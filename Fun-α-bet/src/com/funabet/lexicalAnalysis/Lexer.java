@@ -1,4 +1,4 @@
-package com.Funαbet.lexicalAnalysis;
+package com.funabet.lexicalAnalysis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +141,10 @@ public Lexer(String source) {
             return new Lexeme(TokenType.UPSIDEDOWN_EXCLAMATION, lineNumber);
         case ';':
             return new Lexeme(TokenType.SEMI, lineNumber);
+        case 'Ø':
+            return new Lexeme(TokenType.Ø, lineNumber);
+        case 'Ò':
+            return new Lexeme(TokenType.Ò, lineNumber);
         case '(':
             return new Lexeme(TokenType.O_PAREN, lineNumber);
         case ')':
@@ -168,13 +172,13 @@ public Lexer(String source) {
             //one or two char
         case '=':
             if (match('=')) return new Lexeme(TokenType.EQUALSCOMPARISON, lineNumber);
-            else new Lexeme(TokenType.EQUALSASSIGN, lineNumber);
+            else return new Lexeme(TokenType.EQUALSASSIGN, lineNumber);
         case '+':
             if (match('+')) return new Lexeme(TokenType.PLUSPLUS, lineNumber);
-            else new Lexeme(TokenType.PLUS, lineNumber);
+            else return new Lexeme(TokenType.PLUS, lineNumber);
         case '-':
             if (match('-')) return new Lexeme(TokenType.MINUSMINUS, lineNumber);
-            else new Lexeme(TokenType.MINUS, lineNumber);
+            else return new Lexeme(TokenType.MINUS, lineNumber);
             //Strings
         case '"':
             return lexString();
@@ -182,17 +186,18 @@ public Lexer(String source) {
         default:
             if (isDigit(c)) return lexNumber();
             else if (isAlpha(c)) return lexIdentifierOrKeyword();
-            else Funαbet.error(lineNumber, "Unexpected Character: " +c);
+            else error(lineNumber, "Unexpected Character: " +c);
 
 
     }
+    return null;
     }
 
     private Lexeme lexNumber() {
     boolean isInteger=true;
     while (isDigit(peek())) advance();
     if (peek()=='.') {
-        if (!isDigit(peekNext())) Funαbet.error(lineNumber, "Improper creation of real number (ends in decimal point)");
+        if (!isDigit(peekNext())) error(lineNumber, "Improper creation of real number (ends in decimal point)");
         isInteger=false;
         advance();
         while (isDigit(peek())) advance();
@@ -208,8 +213,10 @@ public Lexer(String source) {
     }
 
     private Lexeme lexString() {
-        while (!(peek()=='"')) if (isAtEnd()) Funαbet.error(lineNumber, "unfinished string";
-        else advance();
+        while (!(peek()=='"')) if(isAtEnd()) {  error(lineNumber, "unfinished string");
+        return null;}
+        else {advance();}
+        advance();
         return new Lexeme(TokenType.STRING, lineNumber, source.substring(startOfCurrentLexeme,currentPosition));
     }
 
@@ -225,7 +232,10 @@ public Lexer(String source) {
     }
 
 
-
+//error reporting
+    private void error(int lineNumber, String str) {
+    System.out.println(str + " " + lineNumber);
+    }
 
 
     // Printing
