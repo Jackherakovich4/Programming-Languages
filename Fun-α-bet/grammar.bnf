@@ -92,6 +92,7 @@ assignment::= VARIABLE "=" expression
 //primaries
 
 boolean::= "true"
+         | VARIABLE
          | "false";
 
 primary ::= VARIABLE

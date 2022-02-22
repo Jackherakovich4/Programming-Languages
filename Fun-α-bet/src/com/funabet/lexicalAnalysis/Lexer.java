@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class Lexer {
     //Instance Variables
     private final String source;
-    private final ArrayList<Lexeme> lexemes;
+    public final ArrayList<Lexeme> lexemes;
     private final HashMap<String, TokenType> keywords;
 
     private int currentPosition;
@@ -54,6 +54,11 @@ public Lexer(String source) {
         keywords.put("Ø", TokenType.Ø);
         keywords.put("Ò", TokenType.Ò);
         keywords.put("EOF", TokenType.EOF);
+        keywords.put("ÅList", TokenType.A_CIRCLE_LIST);
+        keywords.put("bool", TokenType.BOOL_KEYWORD);
+        keywords.put("true", TokenType.TRUE_KEYWORD);
+        keywords.put("false", TokenType.FALSE_KEYWORD);
+        keywords.put("print", TokenType.PRINT_KEYWORD);
     return keywords;
     }
 
@@ -139,6 +144,22 @@ public Lexer(String source) {
             //single char lexemes
         case '¡':
             return new Lexeme(TokenType.UPSIDEDOWN_EXCLAMATION, lineNumber);
+        case ',':
+            return new Lexeme(TokenType.COMMA, lineNumber);
+        case '≈':
+            return new Lexeme(TokenType.SQUIGGLE_EQUALS, lineNumber);
+        case '◊':
+            return new Lexeme(TokenType.DIAMOND, lineNumber);
+        case 'Å':
+            return new Lexeme(TokenType.A_CIRCLE, lineNumber);
+        case '∞':
+            return new Lexeme(TokenType.INFINITY, lineNumber);
+        case '›':
+            return new Lexeme(TokenType.RIGHT_ARROW, lineNumber);
+        case '»':
+            return new Lexeme(TokenType.DOUBLE_RIGHT_ARROW, lineNumber);
+        case '‹':
+            return new Lexeme(TokenType.LEFT_ARROW, lineNumber);
         case ';':
             return new Lexeme(TokenType.SEMI, lineNumber);
         case 'Ø':

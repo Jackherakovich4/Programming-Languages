@@ -12,6 +12,27 @@ import java.util.ArrayList;
 
 public class Funalphabet {
 
+    private static final ArrayList<String> syntaxErrorMessages = new ArrayList<>();
+    private static final ArrayList<String> runtimeErrorMessages = new ArrayList<>();
+
+    public static void syntaxError(String message, int lineNumber) {
+        syntaxErrorMessages.add("Syntax error (line " + lineNumber + "):" + message );
+    }
+
+    public static void syntaxError(String message, Lexeme lexeme) {
+        syntaxErrorMessages.add("Syntax error at " +lexeme + "):" + message );
+    }
+
+    public static void runtimeError(String message, int lineNumber) {
+        runtimeErrorMessages.add("Syntax error (line " + lineNumber + "):" + message );
+    }
+
+    public static void runtimeError(String message, Lexeme lexeme) {
+        runtimeErrorMessages.add("Syntax error at " + lexeme + "):" + message );
+    }
+
+
+
     public static void main(String[] args) throws IOException {
         try {
             if (singlePathProvided(args)) runFile(args[0]);
