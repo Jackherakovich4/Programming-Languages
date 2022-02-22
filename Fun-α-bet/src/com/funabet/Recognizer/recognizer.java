@@ -48,8 +48,70 @@ public class recognizer {
     public void statementList() {
         log("statementList");
         statement();
-        if (statementPending())
+        if (statementListPending()) statementList();
     }
+
+    public void statement() {
+        log("statement");
+        if (functionPending()) function();
+        else if (functionCallPending()) functionCall();
+        else if (variableInitializationPending()) variableInitialization();
+        else if (assignmentPending()) assignment();
+        else if (forLoopPending()) forLoop();
+        else if (whileLoopPending()) whileLoop();
+        else if (infiniteLoopPending()) infiniteLoop();
+        else if (expressionPending()) expression();
+        else if (ifStatementPending()) ifStatement();
+        else if (arrayInitializationPending()) arrayInitialization();
+        else if (arrayListInitializationPending()) arrayListInitialization();
+        else error("expected statement");
+    }
+
+    public void functionCall() {
+        consume(TokenType.IDENTIFIER);
+        consume(TokenType.O_PAREN);
+        if (functionInputPending()) functionInput();
+        consume(TokenType.C_PAREN);
+    }
+
+    public void function() {
+        log("function");
+        consume(TokenType.CAPITAL_PI);
+        consume(TokenType.IDENTIFIER);
+        consume(TokenType.O_PAREN);
+        if(parameterPending()) parameter();
+        consume(TokenType.C_PAREN);
+        block();
+    }
+
+    public void parameter() {
+        log("parameter");
+        if (functionPending()) function();
+        else if (check(TokenType.IDENTIFIER)&&check(TokenType.COMMA)) { consume(TokenType.IDENTIFIER); consume(TokenType.COMMA); parameter(); }
+        else if (check(TokenType.IDENTIFIER)) consume(TokenType.IDENTIFIER);
+        else error("expected parameter");
+    }
+
+    public void block() {
+        log("block");
+        consume(TokenType.UPSIDEDOWN_QUESTION);
+        statementList();
+        consume(TokenType.QUESTION);
+    }
+
+    public void functionInput() {
+        log("functionInput");
+        if (primaryPending() && checkNext(TokenType.COMMA)) { primary(); consume(TokenType.COMMA); functionInput(); }
+        else if (primaryPending()) primary();
+        else error("expected function input");
+    }
+
+    public void primary() {
+        if()
+    }
+
+
+
 
 
     //pending functions
@@ -160,6 +222,10 @@ public class recognizer {
 
     public boolean printStatementPending() {
         return check(TokenType.PRINT_KEYWORD);
+    }
+
+    public boolean functionInputPending() {
+        return (primaryPending()&& checkNext(TokenType.COMMA)) || primaryPending();
     }
 
     private void log(String message) {
