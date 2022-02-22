@@ -1,21 +1,59 @@
 package com.funabet.Recognizer;
 
+import com.funabet.Funalphabet;
 import com.funabet.lexicalAnalysis.Lexer;
 import com.funabet.lexicalAnalysis.Lexeme;
 import com.funabet.lexicalAnalysis.TokenType;
+import java.util.ArrayList;
 
 public class recognizer {
 
-    private int lexemeIndex;
-    private int nextLexemeIndex;
+    private int nextLexemeIndex=0;
+    private final boolean printDebugMessages=true;
+    private final ArrayList<Lexeme> lexemes;
+    private Lexeme currentLexeme;
+
+    //helper functiony things
+
+    private void consume(TokenType expected) {
+        if(check(expected)) advance();
+        else error("Expected: " + expected + "but found " + currentLexeme + "instead.");
+    }
+
+    public recognizer(ArrayList<Lexeme> lexemes) {
+        this.lexemes = lexemes;
+        this.advance();
+    }
+
+    public void advance() {
+        currentLexeme = lexemes.get(nextLexemeIndex);
+        nextLexemeIndex++;
+    }
 
     public boolean check(TokenType expected) {
-        return lexemes.get(lexemeIndex).getType() == expected;
+        return currentLexeme.getType() == expected;
     }
 
     public boolean checkNext(TokenType expected) {
         return lexemes.get(nextLexemeIndex).getType() == expected;
     }
+
+    //consumption functs
+
+    public void program() {
+        log("program");
+        if (statementListPending()) statementList();
+    }
+
+    public void statementList() {
+        log("statementList");
+        statement();
+        if (statementPending())
+    }
+
+
+    //pending functions
+
 
     public boolean programPending() {
         return statementListPending();
@@ -28,6 +66,8 @@ public class recognizer {
     public boolean blockPending() {
         return check(TokenType.UPSIDEDOWN_QUESTION);
     }
+
+
 
     public boolean statementPending() {
         return functionPending() || variableInitializationPending() || assignmentPending() || forLoopPending() ||
@@ -122,6 +162,13 @@ public class recognizer {
         return check(TokenType.PRINT_KEYWORD);
     }
 
+    private void log(String message) {
+        if (printDebugMessages) System.out.println(message);
+    }
+
+    private void error(String message) {
+        Funalphabet.syntaxError(message, currentLexeme);
+    }
 
 
 
