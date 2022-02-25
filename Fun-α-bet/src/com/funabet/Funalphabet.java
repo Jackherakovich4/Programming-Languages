@@ -1,9 +1,9 @@
 package com.funabet;
 
 
+import com.funabet.Recognizer.recognizer;
 import com.funabet.lexicalAnalysis.Lexeme;
 import com.funabet.lexicalAnalysis.Lexer;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -17,6 +17,7 @@ public class Funalphabet {
 
     public static void syntaxError(String message, int lineNumber) {
         syntaxErrorMessages.add("Syntax error (line " + lineNumber + "):" + message );
+
     }
 
     public static void syntaxError(String message, Lexeme lexeme) {
@@ -25,12 +26,26 @@ public class Funalphabet {
 
     public static void runtimeError(String message, int lineNumber) {
         runtimeErrorMessages.add("Syntax error (line " + lineNumber + "):" + message );
+        printErrors();
     }
 
     public static void runtimeError(String message, Lexeme lexeme) {
         runtimeErrorMessages.add("Syntax error at " + lexeme + "):" + message );
+        printErrors();
     }
 
+    private static void printErrors() {
+        final String ANSI_YELLOW ="/u001B[33m";
+        final String ANSI_RESET ="/u001B[41m";
+        final String ANSI_RED_BACKGROUND ="/u001B[0m";
+
+        for (String syntaxErrorMessage : syntaxErrorMessages) {
+            System.out.println(ANSI_YELLOW + syntaxErrorMessage +ANSI_RESET);
+        }
+        for (String runtimeErrorMessage : runtimeErrorMessages) {
+            System.out.println(ANSI_RED_BACKGROUND + runtimeErrorMessage +ANSI_RESET);
+        }
+    }
 
 
     public static void main(String[] args) throws IOException {
@@ -53,8 +68,7 @@ public class Funalphabet {
     public static void runFile(String path) throws IOException {
         String sourceCode = getSourceCodeFromFile(path);
         run(sourceCode);
-        //if (hadSyntaxError) System.exit(65);
-        //if (hadRuntimeError) System.exit(70);
+       printErrors();
     }
 
     private static String getSourceCodeFromFile(String path) throws IOException {
@@ -66,6 +80,9 @@ public class Funalphabet {
         Lexer lexer = new Lexer(sourceCode);
         ArrayList<Lexeme> lexemes = lexer.lex();
         lexer.printLexemes();
+
+        recognizer recognizer = new recognizer(lexemes);
+        recognizer.program();
     }
 
 }
