@@ -47,7 +47,7 @@ public class recognizer {
 
     public void statementList() {
         log("statementList");
-        statement();
+        if (statementPending()) statement();
         if (statementListPending()) statementList();
     }
 

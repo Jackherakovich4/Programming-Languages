@@ -35,15 +35,15 @@ public class Funalphabet {
     }
 
     private static void printErrors() {
-        final String ANSI_YELLOW ="/u001B[33m";
-        final String ANSI_RESET ="/u001B[41m";
-        final String ANSI_RED_BACKGROUND ="/u001B[0m";
+        final String ANSI_YELLOW ="\u001B[33m";
+        final String ANSI_RED_BACKGROUND ="\u001B[41m";
+        final String ANSI_RESET ="\u001B[0m";
 
         for (String syntaxErrorMessage : syntaxErrorMessages) {
             System.out.println(ANSI_YELLOW + syntaxErrorMessage +ANSI_RESET);
         }
         for (String runtimeErrorMessage : runtimeErrorMessages) {
-            System.out.println(ANSI_RED_BACKGROUND + runtimeErrorMessage +ANSI_RESET);
+            System.out.println(ANSI_RED_BACKGROUND + runtimeErrorMessage + ANSI_RESET);
         }
     }
 
