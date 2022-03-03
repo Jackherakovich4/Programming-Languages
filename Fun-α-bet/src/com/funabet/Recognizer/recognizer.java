@@ -16,8 +16,9 @@ public class recognizer {
     //helper functiony things
 
     private void consume(TokenType expected) {
-        if(check(expected)) advance();
+        if(check(expected));
         else error("Expected: " + expected + "but found " + currentLexeme + "instead.");
+        advance();
     }
 
     public recognizer(ArrayList<Lexeme> lexemes) {
@@ -111,7 +112,6 @@ public class recognizer {
         if (check(TokenType.INTEGER)) consume(TokenType.INTEGER);
         else if (check(TokenType.DOUBLE)) consume(TokenType.DOUBLE);
         else if (check(TokenType.STRING)) consume(TokenType.STRING);
-        else if (booleanPending()) booleanx();
         else if (check(TokenType.IDENTIFIER)) consume(TokenType.IDENTIFIER);
         else error("primary expected");
     }
@@ -144,6 +144,15 @@ public class recognizer {
     public void variableInitialization() {
         log("variableInitialization");
         consume(TokenType.UPSIDEDOWN_EXCLAMATION);
+        if(integerKeywordPending()) {
+            consume(TokenType.INTEGER_KEYWORD);
+        } else if (stringKeywordPending()) {
+            consume(TokenType.STRING_KEYWORD);
+        } else if (boolKeywordPending()) {
+            consume(TokenType.BOOL_KEYWORD);
+        } else {
+            error("type of variable expected");
+        }
         consume(TokenType.IDENTIFIER);
         consume(TokenType.EQUALSASSIGN);
         expression();
@@ -198,7 +207,8 @@ public class recognizer {
         consume(TokenType.O_PAREN);
         variableInitialization();
         consume(TokenType.SEMI);
-        comparison();
+        if(comparisonPending()) comparison();
+        else booleanx();
         consume(TokenType.SEMI);
         expression();
         consume(TokenType.C_PAREN);
@@ -370,6 +380,18 @@ public class recognizer {
 
     public boolean printStatementPending() {
         return check(TokenType.PRINT_KEYWORD);
+    }
+
+    public boolean integerKeywordPending() {
+        return check(TokenType.INTEGER_KEYWORD);
+    }
+
+    public boolean stringKeywordPending() {
+        return check(TokenType.STRING_KEYWORD);
+    }
+
+    public boolean boolKeywordPending() {
+        return check(TokenType.BOOL_KEYWORD);
     }
 
     public boolean functionInputPending() {
