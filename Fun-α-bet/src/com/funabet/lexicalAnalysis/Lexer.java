@@ -54,7 +54,6 @@ public Lexer(String source) {
         keywords.put("Ø", TokenType.Ø);
         keywords.put("Ò", TokenType.Ò);
         keywords.put("EOF", TokenType.EOF);
-        keywords.put("ÅList", TokenType.A_CIRCLE_LIST);
         keywords.put("bool", TokenType.BOOL_KEYWORD);
         keywords.put("true", TokenType.TRUE_KEYWORD);
         keywords.put("false", TokenType.FALSE_KEYWORD);

@@ -36,6 +36,7 @@ public class recognizer {
     }
 
     public boolean checkNext(TokenType expected) {
+        if (lexemes.size()<=nextLexemeIndex) return false;
         return lexemes.get(nextLexemeIndex).getType() == expected;
     }
 
@@ -64,11 +65,11 @@ public class recognizer {
         else if (expressionPending()) expression();
         else if (ifStatementPending()) ifStatement();
         else if (arrayInitializationPending()) arrayInitialization();
-        else if (arrayListInitializationPending()) arrayListInitialization();
         else error("expected statement");
     }
 
     public void functionCall() {
+        log ("functionCall");
         consume(TokenType.IDENTIFIER);
         consume(TokenType.O_PAREN);
         if (functionInputPending()) functionInput();
@@ -257,14 +258,6 @@ public class recognizer {
         consume(TokenType.IDENTIFIER);
     }
 
-    public void arrayListInitialization() {
-        log("array list initialization");
-        consume(TokenType.A_CIRCLE_LIST);
-        consume(TokenType.O_PAREN);
-        consume(TokenType.C_PAREN);
-        consume(TokenType.IDENTIFIER);
-    }
-
 
 
 
@@ -292,7 +285,6 @@ public class recognizer {
                 || expressionPending()
                 || ifStatementPending()
                 || arrayInitializationPending()
-                || arrayListInitializationPending()
                 || functionCallPending();
     }
 
@@ -328,9 +320,7 @@ public class recognizer {
         return check(TokenType.A_CIRCLE);
     }
 
-    public boolean arrayListInitializationPending() {
-        return check(TokenType.A_CIRCLE_LIST);
-    }
+
 
     public boolean functionCallPending() {
         return check(TokenType.IDENTIFIER) && checkNext(TokenType.O_PAREN);
