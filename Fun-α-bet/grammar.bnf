@@ -14,7 +14,6 @@ statement ::= function
             | expression
             | ifStatement
             | arrayInitialization
-            | arrayListInitialization
             | functionCall;
 
 expression::= primary binaryOperator primary
@@ -79,8 +78,6 @@ binaryOperator::=  "+"
 //arrays
 
 arrayInitialization::= "Å" "(" expression ")" IDENTIFIER;
-
-arrayListInitialization::= "Ålist" "(" ")" IDENTIFIER;
 
 //variables
 

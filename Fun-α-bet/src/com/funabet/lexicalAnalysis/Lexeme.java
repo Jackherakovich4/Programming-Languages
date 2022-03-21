@@ -9,6 +9,8 @@ public class Lexeme {
     // Type-Value Lexemes also get ONE of these:
     private Integer numberval;
     private String stringval;
+    private Lexeme left;
+    private Lexeme right;
     private Double realval;
     private Boolean boolval;
 
@@ -54,6 +56,14 @@ public class Lexeme {
 
     public int getLineNumber() {
         return lineNumber;
+    }
+
+    public void setLeft(Lexeme left) {
+        this.left=left;
+    }
+
+    public void setRight(Lexeme right) {
+        this.left=right;
     }
 
     public Integer getNumberval() {
