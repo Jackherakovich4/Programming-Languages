@@ -53,6 +53,11 @@ public enum TokenType {
     IDENTIFIER,
     STRING,
 
+    //helpers
+    GLUE,
+    STATEMENT_LIST,
+
+
 
 
 }

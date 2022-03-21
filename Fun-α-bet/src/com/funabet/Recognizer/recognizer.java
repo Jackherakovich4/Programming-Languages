@@ -9,11 +9,13 @@ import java.util.ArrayList;
 public class recognizer {
 
     private int nextLexemeIndex=0;
-    private final boolean printDebugMessages=true;
-    private final ArrayList<Lexeme> lexemes;
+    private final boolean printDebugMessages=false;
+    private ArrayList<Lexeme> lexemes;
     private Lexeme currentLexeme;
 
     //helper functiony things
+
+
 
     private Lexeme consume(TokenType expected) {
         if(check(expected));
@@ -46,14 +48,19 @@ public class recognizer {
 
     public Lexeme program() {
         log("program");
-        if (statementListPending()) return statementList();
+
+        if (statementListPending()) {
+            return statementList();
+        }
         else return null;
     }
 
     public Lexeme statementList() {
         log("statementList");
-        if (statementPending()) return statement();
-        if (statementListPending()) return statementList();
+        Lexeme S = null;
+        if (statementPending())  S = statement();
+        if (statementListPending()) S.setLeft( statementList());
+        return S;
     }
 
     public Lexeme statement() {
@@ -88,7 +95,7 @@ public class recognizer {
 
     public Lexeme function() {
         log("function");
-        Lexeme glue = null;
+        Lexeme glue = new Lexeme(TokenType.GLUE, -1);
         Lexeme P = null;
         Lexeme CapPi = consume(TokenType.CAPITAL_PI);
         Lexeme ID = consume(TokenType.IDENTIFIER);
@@ -122,9 +129,14 @@ public class recognizer {
     public Lexeme block() {
         log("block");
         Lexeme UQ = consume(TokenType.UPSIDEDOWN_QUESTION);
+        if (!checkNext(TokenType.QUESTION)) {
         Lexeme SL = statementList();
+            Lexeme Q = consume(TokenType.QUESTION);
+            UQ.setLeft(SL);
+            UQ.setRight(Q);
+            return UQ;
+        }
         Lexeme Q = consume(TokenType.QUESTION);
-        UQ.setLeft(SL);
         UQ.setRight(Q);
         return UQ;
     }
@@ -154,29 +166,35 @@ public class recognizer {
         else{ error("primary expected"); return null; }
     }
 
-    public void booleanx(){
+    public Lexeme booleanx(){
         log("boolean");
-        if (check(TokenType.FALSE_KEYWORD)) consume(TokenType.FALSE_KEYWORD);
-        else if (check(TokenType.TRUE_KEYWORD)) consume(TokenType.TRUE_KEYWORD);
-        else if (comparisonPending()) comparison();
+        if (check(TokenType.FALSE_KEYWORD)) return consume(TokenType.FALSE_KEYWORD);
+        else if (check(TokenType.TRUE_KEYWORD)) return consume(TokenType.TRUE_KEYWORD);
+        else if (comparisonPending()) return comparison();
         else error("boolean expected");
+        return null;
     }
 
-    public void comparison() {
+    public Lexeme comparison() {
         log("comparison");
-        primary();
-        comparator();
-        primary();
+        Lexeme pri1 = primary();
+        Lexeme C = comparator();
+        Lexeme pri2 = primary();
+
+        C.setLeft(pri1);
+        C.setRight(pri2);
+        return C;
     }
 
-    public void comparator() {
+    public Lexeme comparator() {
         log("Comparator");
-        if (check(TokenType.EQUALSCOMPARISON)) consume(TokenType.EQUALSCOMPARISON);
-        else if (check(TokenType.GREATER_THAN_OR_EQUAL)) consume(TokenType.GREATER_THAN_OR_EQUAL);
-        else if (check(TokenType.GREATER_THAN)) consume(TokenType.GREATER_THAN);
-        else if (check(TokenType.LESS_THAN_OR_EQUAL)) consume(TokenType.LESS_THAN_OR_EQUAL);
-        else if (check(TokenType.LESS_THAN)) consume(TokenType.LESS_THAN);
+        if (check(TokenType.EQUALSCOMPARISON)) return consume(TokenType.EQUALSCOMPARISON);
+        else if (check(TokenType.GREATER_THAN_OR_EQUAL)) return consume(TokenType.GREATER_THAN_OR_EQUAL);
+        else if (check(TokenType.GREATER_THAN)) return consume(TokenType.GREATER_THAN);
+        else if (check(TokenType.LESS_THAN_OR_EQUAL)) return consume(TokenType.LESS_THAN_OR_EQUAL);
+        else if (check(TokenType.LESS_THAN)) return consume(TokenType.LESS_THAN);
         else error("comparator expected");
+        return null;
     }
 
     public Lexeme variableInitialization() {
@@ -259,68 +277,163 @@ public class recognizer {
         return null;
     }
 
-    public void assignment() {
+    public Lexeme assignment() {
         log("assignment");
-        consume(TokenType.IDENTIFIER);
-        if (check(TokenType.EQUALSASSIGN)) { consume(TokenType.EQUALSASSIGN); expression();}
-        else if (unaryOperatorPending()) unaryOperator();
+        Lexeme ID = consume(TokenType.IDENTIFIER);
+        if (check(TokenType.EQUALSASSIGN)) {
+            Lexeme EA = consume(TokenType.EQUALSASSIGN);
+            Lexeme EX = expression();
+            EA.setLeft(ID);
+            EA.setRight(EX);
+            return EA;
+        }
+        else if (unaryOperatorPending()) {
+            Lexeme UOp = unaryOperator();
+            UOp.setLeft(ID);
+            return UOp;
+        }
         else error("variable assignment expected");
+        return null;
     }
 
-    public void forLoop() {
+    public Lexeme forLoop() {
         log("forLoop");
-        consume(TokenType.SQUIGGLE_EQUALS);
-        consume(TokenType.O_PAREN);
-        variableInitialization();
-        consume(TokenType.SEMI);
-        if(comparisonPending()) comparison();
-        else booleanx();
-        consume(TokenType.SEMI);
-        expression();
-        consume(TokenType.C_PAREN);
-        block();
+        Lexeme Glue1 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue2 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue3 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue4 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue5 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue6 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Bool = null;
+        Lexeme C = null;
+        Lexeme SE = consume(TokenType.SQUIGGLE_EQUALS);
+        Lexeme OP = consume(TokenType.O_PAREN);
+        Lexeme Vinit = variableInitialization();
+        Lexeme Semi1 = consume(TokenType.SEMI);
+        if(comparisonPending()) C = comparison();
+        else  Bool = booleanx();
+        Lexeme Semi2 = consume(TokenType.SEMI);
+        Lexeme EX = expression();
+        Lexeme CP = consume(TokenType.C_PAREN);
+        Lexeme B = block();
+
+        SE.setLeft(Glue1);
+        SE.setRight(Glue2);
+        Glue1.setLeft(Glue3);
+        Glue1.setRight(Glue4);
+        Glue2.setLeft(Glue5);
+        Glue2.setRight(Glue6);
+        Glue3.setLeft(OP);
+        Glue3.setRight(Vinit);
+        Glue4.setLeft(Semi1);
+        Glue4.setRight(C);
+        Glue5.setLeft(Semi2);
+        Glue5.setRight(EX);
+        Glue6.setLeft(OP);
+        Glue6.setRight(B);
+        return SE;
     }
 
-    public void whileLoop() {
+    public Lexeme whileLoop() {
         log("while Loop");
-        consume(TokenType.DIAMOND);
-        consume(TokenType.O_PAREN);
-        comparison();
-        consume(TokenType.C_PAREN);
-        block();
+        Lexeme Glue1 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue2 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme D = consume(TokenType.DIAMOND);
+        Lexeme OP = consume(TokenType.O_PAREN);
+        Lexeme C = comparison();
+        Lexeme CP = consume(TokenType.C_PAREN);
+        Lexeme B = block();
+
+        D.setLeft(Glue1);
+        D.setRight(Glue2);
+        Glue1.setLeft(OP);
+        Glue1.setRight(C);
+        Glue2.setLeft(CP);
+        Glue2.setRight(B);
+        return D;
     }
 
-    public void infiniteLoop() {
+    public Lexeme infiniteLoop() {
         log("infinite loop");
-        consume(TokenType.INFINITY);
-        block();
+        Lexeme I = consume(TokenType.INFINITY);
+        Lexeme B = block();
+        I.setRight(B);
+        return I;
     }
 
-    public void ifStatement() {
+    public Lexeme ifStatement() {
         log("if Statement");
-        consume(TokenType.RIGHT_ARROW);
-        consume(TokenType.O_PAREN);
-        comparison();
-        consume(TokenType.C_PAREN);
-        block();
-        if (elseStatementPending()) elseStatement();
-        else if (elseStatementPendingNext()) {consume(TokenType.DOUBLE_RIGHT_ARROW); ifStatement(); elseStatement(); }
-        else if (ifStatementPending()) ifStatement();
+        Lexeme Glue1 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue2 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue3 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme RA = consume(TokenType.RIGHT_ARROW);
+        Lexeme OP = consume(TokenType.O_PAREN);
+        Lexeme C = comparison();
+        Lexeme CP = consume(TokenType.C_PAREN);
+        Lexeme B = block();
+        if (elseStatementPending()) {
+            Lexeme ES = elseStatement();
+
+            RA.setLeft(Glue1);
+            RA.setRight(ES);
+            Glue1.setLeft(Glue2);
+            Glue1.setRight(Glue3);
+            Glue2.setLeft(OP);
+            Glue2.setRight(C);
+            Glue3.setLeft(CP);
+            Glue3.setRight(B);
+            return RA;
+        } else if (elseIfStatementPending()) {
+            Lexeme DRA = consume(TokenType.DOUBLE_RIGHT_ARROW);
+            Lexeme IS = ifStatement();
+
+            RA.setRight(DRA);
+            DRA.setLeft(IS);
+            RA.setLeft(Glue1);
+            Glue1.setLeft(Glue2);
+            Glue1.setRight(Glue3);
+            Glue2.setLeft(OP);
+            Glue2.setRight(C);
+            Glue3.setLeft(CP);
+            Glue3.setRight(B);
+            return RA;
+
+        }
+        RA.setLeft(Glue1);
+        Glue1.setLeft(Glue2);
+        Glue1.setRight(Glue3);
+        Glue2.setLeft(OP);
+        Glue2.setRight(C);
+        Glue3.setLeft(CP);
+        Glue3.setRight(B);
+        return RA;
     }
 
-    public void elseStatement() {
+    public Lexeme elseStatement() {
         log("else statement");
-        consume(TokenType.LEFT_ARROW);
-        block();
+        Lexeme LA = consume(TokenType.LEFT_ARROW);
+        Lexeme B = block();
+        LA.setRight(B);
+        return LA;
     }
 
-    public void arrayInitialization() {
+    public Lexeme arrayInitialization() {
         log("array initialization");
-        consume(TokenType.A_CIRCLE);
-        consume(TokenType.O_PAREN);
-        expression();
-        consume(TokenType.C_PAREN);
-        consume(TokenType.IDENTIFIER);
+        Lexeme Glue1 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme Glue2 = new Lexeme(TokenType.GLUE, -1);
+        Lexeme ACircle = consume(TokenType.A_CIRCLE);
+        Lexeme OP = consume(TokenType.O_PAREN);
+        Lexeme EX = expression();
+        Lexeme CP = consume(TokenType.C_PAREN);
+        Lexeme ID = consume(TokenType.IDENTIFIER);
+
+        ACircle.setLeft(Glue1);
+        ACircle.setRight(Glue2);
+        Glue1.setLeft(OP);
+        Glue1.setRight(EX);
+        Glue2.setLeft(CP);
+        Glue2.setRight(ID);
+        return ACircle;
     }
 
 
@@ -379,6 +492,10 @@ public class recognizer {
 
     public boolean ifStatementPending() {
         return check(TokenType.RIGHT_ARROW);
+    }
+
+    public boolean elseIfStatementPending() {
+        return check(TokenType.DOUBLE_RIGHT_ARROW);
     }
 
     public boolean arrayInitializationPending() {
@@ -455,6 +572,24 @@ public class recognizer {
 
     private void log(String message) {
         if (printDebugMessages) System.out.println(message);
+    }
+
+    public void printTree(Lexeme root, int tabcount) {
+        System.out.println(root);
+        if (root.getLeft()!=null) {
+            for (int i = 0; i<=tabcount; i++) {
+            System.out.print("    ");
+            }
+            System.out.print("with the left child: ");
+            printTree(root.getLeft(),tabcount+1);
+        }
+        if (root.getRight()!=null) {
+            for (int i = 0; i<=tabcount; i++) {
+                System.out.print("    ");
+            }
+            System.out.print("with the right child: ");
+            printTree(root.getRight(), tabcount+1);
+        }
     }
 
     private void error(String message) {

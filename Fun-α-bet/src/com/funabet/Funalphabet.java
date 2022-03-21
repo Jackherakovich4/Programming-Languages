@@ -79,10 +79,12 @@ public class Funalphabet {
     public static void run(String sourceCode) {
         Lexer lexer = new Lexer(sourceCode);
         ArrayList<Lexeme> lexemes = lexer.lex();
-        lexer.printLexemes();
+        if (false) {
+            lexer.printLexemes();
+        }
 
         recognizer recognizer = new recognizer(lexemes);
-        recognizer.program();
+        recognizer.printTree(recognizer.program(), 0);
     }
 
 }

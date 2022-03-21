@@ -62,8 +62,16 @@ public class Lexeme {
         this.left=left;
     }
 
+    public Lexeme getLeft() {
+        return left;
+    }
+
+    public Lexeme getRight() {
+        return right;
+    }
+
     public void setRight(Lexeme right) {
-        this.left=right;
+        this.right=right;
     }
 
     public Integer getNumberval() {
