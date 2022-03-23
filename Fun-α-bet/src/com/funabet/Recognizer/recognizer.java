@@ -57,10 +57,10 @@ public class recognizer {
 
     public Lexeme statementList() {
         log("statementList");
-        Lexeme S = null;
-        if (statementPending())  S = statement();
-        if (statementListPending()) S.setLeft( statementList());
-        return S;
+        Lexeme SL = new Lexeme(TokenType.STATEMENT_LIST, -1);
+        if (statementPending())  SL.setRight(statement());
+        if (statementListPending()) SL.setLeft(statementList());
+        return SL;
     }
 
     public Lexeme statement() {
