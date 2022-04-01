@@ -37,7 +37,6 @@ public class Enviroment {
     public void insert(Lexeme ID, Lexeme Val) {
        indentifiers.add(ID);
        values.add(Val);
-
    }
 
    public void modify(Lexeme ID, Lexeme replacementVal) {
@@ -45,7 +44,10 @@ public class Enviroment {
        for (Lexeme lu : indentifiers) {
            if (ID==lu) {
                break;
-           } else {
+           } else if (position==indentifiers.size()-1) {
+               error("variable referenced not found");
+               return;
+           }else {
                position++;
            }
        }
@@ -64,8 +66,17 @@ public class Enviroment {
        } else {
            lookup(base.getParent(), lookup);
        }
+       error("Variable referenced not found");
        return null;
    }
+
+   private void error(String message, int linenum) {
+       System.out.println( "error: " + message + " at line number " +linenum);
+   }
+
+    private void error(String message) {
+        System.out.println( "error: " + message);
+    }
 
    public void printEnviroment(Enviroment enviroment) {
        System.out.println("------Enviroment------");
@@ -76,7 +87,7 @@ public class Enviroment {
        }
        System.out.println("Identifiers");
        for (int i=0; i<indentifiers.size(); i++) {
-           System.out.println(indentifiers.get(i));
+           System.out.println(indentifiers.get(i).getStringval());
        }
        System.out.println("Values");
        for (int i=0; i<values.size(); i++) {
