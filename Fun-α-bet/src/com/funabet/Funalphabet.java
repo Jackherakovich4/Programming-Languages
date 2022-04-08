@@ -1,6 +1,7 @@
 package com.funabet;
 
 
+import com.funabet.Eval.Evaluator;
 import com.funabet.Recognizer.recognizer;
 import com.funabet.lexicalAnalysis.Lexeme;
 import com.funabet.lexicalAnalysis.Lexer;
@@ -84,7 +85,10 @@ public class Funalphabet {
         }
 
         recognizer recognizer = new recognizer(lexemes);
-        recognizer.printTree(recognizer.program(), 0);
+        Evaluator Evaluator = new Evaluator();
+        Lexeme a = recognizer.program();
+        recognizer.printTree(a,0);
+        System.out.println(Evaluator.eval(a,new Enviroment("z")));
     }
 
 }

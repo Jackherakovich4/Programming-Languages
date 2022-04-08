@@ -54,7 +54,7 @@ public class Enviroment {
        values.set(position, replacementVal);
    }
 
-   public Enviroment lookup(Enviroment base, Lexeme lookup) {
+   public Lexeme lookup(Enviroment base, Lexeme lookup) {
        boolean x=false;
        for (Lexeme lu : indentifiers) {
            if (lu==lookup) {
@@ -62,7 +62,7 @@ public class Enviroment {
            }
        }
        if (x) {
-            return base;
+            return lookup;
        } else {
            lookup(base.getParent(), lookup);
        }

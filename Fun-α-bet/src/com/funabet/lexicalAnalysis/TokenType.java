@@ -52,6 +52,7 @@ public enum TokenType {
     DOUBLE,
     IDENTIFIER,
     STRING,
+    BOOLEAN,
 
     //helpers
     GLUE,

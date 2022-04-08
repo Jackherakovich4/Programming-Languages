@@ -237,6 +237,14 @@ public class recognizer {
             M.setRight(P);
             return M;
         }
+        else if (comparisonPending()) {
+            Lexeme L = primary();
+            Lexeme C = comparator();
+            Lexeme R = primary();
+            C.setLeft(L);
+            C.setRight(R);
+            return C;
+        }
         else if (primaryPending()) {
             if (checkNext(TokenType.PLUS)||checkNext(TokenType.MINUS)||checkNext(TokenType.TIMES)||checkNext(TokenType.DIVIDE)||checkNext(TokenType.MODULUS)) {
                 Lexeme P = primary();
@@ -531,7 +539,7 @@ public class recognizer {
     }
 
     public boolean comparisonPending() {
-        return (primaryPending() && comparatorPendingNext()) || check(TokenType.IDENTIFIER);
+        return (primaryPending() && comparatorPendingNext());
     }
 
     public boolean comparatorPendingNext() {
