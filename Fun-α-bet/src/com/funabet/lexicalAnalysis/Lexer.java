@@ -58,6 +58,7 @@ public Lexer(String source) {
         keywords.put("true", TokenType.TRUE_KEYWORD);
         keywords.put("false", TokenType.FALSE_KEYWORD);
         keywords.put("print", TokenType.PRINT_KEYWORD);
+        keywords.put("double", TokenType.REAL_KEYWORD);
     return keywords;
     }
 

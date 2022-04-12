@@ -3,6 +3,7 @@ package com.funabet.lexicalAnalysis;
 public enum TokenType {
     // Keywords
     INTEGER_KEYWORD,
+    REAL_KEYWORD,
     STRING_KEYWORD,
     BOOL_KEYWORD,
     TRUE_KEYWORD,
@@ -57,6 +58,7 @@ public enum TokenType {
     //helpers
     GLUE,
     STATEMENT_LIST,
+    ASSIGN,
 
 
 

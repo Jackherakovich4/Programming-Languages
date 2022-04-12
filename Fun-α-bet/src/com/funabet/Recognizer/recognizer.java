@@ -199,7 +199,8 @@ public class recognizer {
 
     public Lexeme variableInitialization() {
         log("variableInitialization");
-        Lexeme G = null;
+        Lexeme glue = new Lexeme(TokenType.GLUE, -1);
+        Lexeme R = null;
         Lexeme I = null;
         Lexeme S = null;
         Lexeme B = null;
@@ -210,22 +211,27 @@ public class recognizer {
             S = consume(TokenType.STRING_KEYWORD);
         } else if (boolKeywordPending()) {
             B = consume(TokenType.BOOL_KEYWORD);
-        } else {
+        } else if (realKeywordPending()) {
+            R= consume(TokenType.REAL_KEYWORD);
+        }else {
+
             error("type of variable expected");
         }
         Lexeme ID = consume(TokenType.IDENTIFIER);
         Lexeme EA = consume(TokenType.EQUALSASSIGN);
         Lexeme Express = expression();
         UE.setRight(Express);
-        UE.setLeft(G);
+        UE.setLeft(glue);
         if (I != null) {
-            G.setLeft(I);
+            glue.setLeft(I);
         } else if (B!=null) {
-            G.setLeft(B);
+            glue.setLeft(B);
+        } else if (R!=null){
+            glue.setLeft(R);
         } else {
-            G.setLeft(S);
+            glue.setLeft(S);
         }
-        G.setRight(ID);
+        glue.setRight(ID);
         return UE;
     }
 
@@ -287,18 +293,21 @@ public class recognizer {
 
     public Lexeme assignment() {
         log("assignment");
+        Lexeme assign = new Lexeme( TokenType.ASSIGN, currentLexeme.getLineNumber());
         Lexeme ID = consume(TokenType.IDENTIFIER);
         if (check(TokenType.EQUALSASSIGN)) {
             Lexeme EA = consume(TokenType.EQUALSASSIGN);
             Lexeme EX = expression();
             EA.setLeft(ID);
             EA.setRight(EX);
-            return EA;
+            assign.setRight(EA);
+            return assign;
         }
         else if (unaryOperatorPending()) {
             Lexeme UOp = unaryOperator();
             UOp.setLeft(ID);
-            return UOp;
+            assign.setRight(UOp);
+            return assign;
         }
         else error("variable assignment expected");
         return null;
@@ -564,6 +573,10 @@ public class recognizer {
 
     public boolean integerKeywordPending() {
         return check(TokenType.INTEGER_KEYWORD);
+    }
+
+    public boolean realKeywordPending() {
+        return check(TokenType.REAL_KEYWORD);
     }
 
     public boolean stringKeywordPending() {

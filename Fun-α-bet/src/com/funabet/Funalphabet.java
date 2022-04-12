@@ -83,7 +83,7 @@ public class Funalphabet {
         if (false) {
             lexer.printLexemes();
         }
-
+        Enviroment global = new Enviroment("global");
         recognizer recognizer = new recognizer(lexemes);
         Evaluator Evaluator = new Evaluator();
         Lexeme a = recognizer.program();
