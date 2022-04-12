@@ -65,7 +65,10 @@ public class Evaluator {
                             return new Lexeme (TokenType.INTEGER, tree.getLineNumber(),eval(tree.getLeft(),enviroment).getNumberval()+eval(tree.getRight(),enviroment).getNumberval());
                         case DOUBLE :
                             return new Lexeme (TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(),enviroment).getRealval()+(double) eval(tree.getRight(), enviroment).getNumberval());
-                        case STRING, BOOLEAN :
+                        case STRING :
+                            String x = eval(tree.getRight(), enviroment).getStringval().substring((eval(tree.getRight(), enviroment).getStringval().length()%eval(tree.getLeft(),enviroment).getNumberval()),(eval(tree.getRight(), enviroment).getStringval().length()%eval(tree.getLeft(),enviroment).getNumberval())+1);
+                            return new Lexeme(TokenType.STRING, tree.getLineNumber(),eval(tree.getRight(), enviroment).getStringval()+ x );
+                        case BOOLEAN :
                             return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
                         default : return error("function lol");
                     }
@@ -75,12 +78,28 @@ public class Evaluator {
                             return new Lexeme (TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getRealval()+(double) eval(tree.getRight(),enviroment).getNumberval());
                         case DOUBLE :
                             return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getNumberval()+eval(tree.getRight(),enviroment).getNumberval());
-                        case STRING, BOOLEAN :
+                        case STRING:
+                            String x = eval(tree.getRight(), enviroment).getStringval().substring((int) (eval(tree.getRight(), enviroment).getStringval().length()%(Math.round( eval(tree.getLeft(),enviroment).getRealval()))),(int)(eval(tree.getRight(), enviroment).getStringval().length()%(Math.round( eval(tree.getLeft(),enviroment).getRealval())))+1);
+                            return new Lexeme(TokenType.STRING, tree.getLineNumber(),eval(tree.getRight(), enviroment).getStringval()+ x );
+                        case BOOLEAN :
                             return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
                         default :
                             return error("function lol");
                     }
-                    case STRING: if(eval(tree.getRight(), enviroment).getType()==TokenType.STRING)return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(),tree.getLeft().getStringval().length()  + eval(tree.getRight(),enviroment).getStringval().length());
+                    case STRING: if(eval(tree.getRight(), enviroment).getType()==TokenType.STRING)return new Lexeme(TokenType.STRING, tree.getLineNumber(),tree.getLeft().getStringval()  + eval(tree.getRight(),enviroment).getStringval());
+                    else if (eval(tree.getRight(), enviroment).getType()==TokenType.INTEGER) {
+                        String x = eval(tree.getLeft(), enviroment).getStringval().substring((eval(tree.getLeft(), enviroment).getStringval().length()%eval(tree.getRight(),enviroment).getNumberval()),(eval(tree.getLeft(), enviroment).getStringval().length()%eval(tree.getRight(),enviroment).getNumberval())+1);
+                        return new Lexeme(TokenType.STRING, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getStringval()+ x );
+                    } else if (eval(tree.getRight(), enviroment).getType()==TokenType.DOUBLE) {
+                        String x = eval(tree.getLeft(), enviroment).getStringval().substring((int) (eval(tree.getLeft(), enviroment).getStringval().length()%(Math.round( eval(tree.getRight(),enviroment).getRealval()))),(int)(eval(tree.getLeft(), enviroment).getStringval().length()%(Math.round( eval(tree.getRight(),enviroment).getRealval())))+1);
+                        return new Lexeme(TokenType.STRING, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getStringval()+ x );
+                    }else if (eval(tree.getRight(), enviroment).getType()==TokenType.BOOLEAN) {
+                        if (eval(tree.getRight(), enviroment).getBoolval()) {
+                            return new Lexeme(TokenType.STRING, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getStringval()+ "true" );
+                        } else {
+                            return new Lexeme(TokenType.STRING, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getStringval()+ "false" );
+                        }
+                    }
                     else return error("can only add strings to strings");
                     case BOOLEAN: return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
                 default: return error("Im throwing simple operator coding");
@@ -92,7 +111,9 @@ public class Evaluator {
                            return new Lexeme (TokenType.INTEGER, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getNumberval()-eval(tree.getRight(),enviroment).getNumberval());
                        case DOUBLE :
                            return new Lexeme (TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getRealval()-(double) eval(tree.getRight(),enviroment).getNumberval());
-                       case STRING, BOOLEAN:
+                       case STRING:
+                           return new Lexeme (TokenType.INTEGER, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getNumberval()-eval(tree.getRight(),enviroment).getStringval().length());
+                       case BOOLEAN:
                            return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
                        default : return error("function lol");
                    }
@@ -102,12 +123,50 @@ public class Evaluator {
                            return new Lexeme (TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getRealval()-(double) eval(tree.getRight(),enviroment).getNumberval());
                        case DOUBLE :
                            return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getNumberval()-eval(tree.getRight(),enviroment).getNumberval());
-                       case STRING, BOOLEAN :
+                       case STRING:
+                           return new Lexeme (TokenType.INTEGER, tree.getLineNumber(),eval(tree.getLeft(), enviroment).getRealval()-eval(tree.getRight(),enviroment).getStringval().length());
+                       case BOOLEAN :
                            return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
                        default :
                            return error("function lol");
                    }
-               case STRING, BOOLEAN: return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
+               case STRING:
+                   if (eval(tree.getRight(), enviroment).getType()==TokenType.STRING) {
+                       String temp="";
+                       int count=0;
+                       for (int i = 0; i<eval(tree.getLeft(), enviroment).getStringval().length(); i++) {
+                           for (int j = 0; j<eval(tree.getRight(), enviroment).getStringval().length(); j++) {
+                               if (eval(tree.getLeft(), enviroment).getStringval().charAt(i)==eval(tree.getRight(), enviroment).getStringval().charAt(j)){
+                                    count++;
+                               }
+                           }
+                           if (count==0) {
+                               temp+=eval(tree.getLeft(), enviroment).getStringval().substring(i,i+1);
+                           }
+                           count=0;
+                       }
+                       return new Lexeme(TokenType.STRING, tree.getLineNumber(), temp);
+                   } else if (eval(tree.getRight(), enviroment).getType()==TokenType.BOOLEAN){
+                       String temp="";
+                        if (eval(tree.getRight(), enviroment).getBoolval()) {
+                            for (int i=0; i<(eval(tree.getLeft(), enviroment).getStringval().length()); i++) {
+                                if ((eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='t' ||eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='r' || eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='u'|| eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='e')) {
+                                } else {
+                                    temp+=(eval(tree.getLeft(), enviroment).getStringval().substring(i,i+1));
+                                }
+                            }
+                            return new Lexeme(TokenType.STRING, tree.getLineNumber(), temp);
+                        } else {
+                            for (int i=0; i<(eval(tree.getLeft(), enviroment).getStringval().length()); i++) {
+                                if ((eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='f' ||eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='a' || eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='l'|| eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='s'|| eval(tree.getLeft(), enviroment).getStringval().charAt(i)=='e')) {
+                                } else {
+                                    temp+=(eval(tree.getLeft(), enviroment).getStringval().substring(i,i+1));
+                                }
+                            }
+                            return new Lexeme(TokenType.STRING, tree.getLineNumber(), temp);
+                        }
+                   }
+               case BOOLEAN: return error("Can't combine "+ eval(tree.getRight(),enviroment).getType() +" and Integer");
 
                default: switch (eval(tree.getRight(), enviroment).getType()) {
                    case INTEGER:
@@ -116,21 +175,33 @@ public class Evaluator {
                        return new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), -(eval(tree.getRight(),enviroment).getRealval()));
                    case BOOLEAN:
                        return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), !eval(tree.getRight(),enviroment).getBoolval());
+                   case STRING:
+                       String temp="";
+                       for (int i =eval(tree.getRight(),enviroment).getStringval().length();i>0;i--) {
+                           temp+=eval(tree.getRight(),enviroment).getStringval().substring(i-1,i);
+                       }
+                       return new Lexeme(TokenType.STRING, tree.getLineNumber(), temp);
                    default: return error("Im throwing simple operator coding");
                }
            }
             case TIMES: switch ((eval(tree.getRight(), enviroment)).getType()) {
-                case INTEGER :switch (eval(tree.getRight(), enviroment).getType()) {
+                case INTEGER :switch (eval(tree.getLeft(), enviroment).getType()) {
                     case INTEGER:
                         return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getNumberval() * eval(tree.getRight(),enviroment).getNumberval());
                     case DOUBLE:
                         return new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getRealval() * eval(tree.getRight(),enviroment).getNumberval());
-                    case STRING, BOOLEAN:
-                        return error("Can't combine " + eval(tree.getRight(),enviroment).getType() + " and Integer");
+                    case STRING:
+                        String temp="";
+                        for (int i=eval(tree.getRight(), enviroment).getNumberval(); i>0; i--) {
+                            temp+=eval(tree.getLeft(), enviroment).getStringval();
+                        }
+                        return new Lexeme(TokenType.STRING, tree.getLineNumber(), temp);
+                    case BOOLEAN:
+                        return error("Can't combine " + eval(tree.getLeft(),enviroment).getType() + " and Integer");
                     default:
                         return error("function lol");
                 }
-                case DOUBLE: switch (eval(tree.getRight(), enviroment).getType()) {
+                case DOUBLE: switch (eval(tree.getLeft(), enviroment).getType()) {
                     case INTEGER :
                         return new Lexeme (TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getRealval()* eval(tree.getRight(),enviroment).getNumberval());
                     case DOUBLE :
@@ -144,7 +215,7 @@ public class Evaluator {
                 default: return error("Im throwing simple operator coding");
             }
             case DIVIDE: switch ((eval(tree.getRight(), enviroment)).getType()) {
-                case INTEGER :switch (eval(tree.getRight(), enviroment).getType()) {
+                case INTEGER :switch (eval(tree.getLeft(), enviroment).getType()) {
                     case INTEGER:
                         return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getNumberval() * eval(tree.getRight(),enviroment).getNumberval());
                     case DOUBLE:
@@ -154,7 +225,7 @@ public class Evaluator {
                     default:
                         return error("function lol");
                 }
-                case DOUBLE: switch (eval(tree.getRight(), enviroment).getType()) {
+                case DOUBLE: switch (eval(tree.getLeft(), enviroment).getType()) {
                     case INTEGER :
                         return new Lexeme (TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getLeft(), enviroment).getRealval()/eval(tree.getRight(),enviroment).getNumberval());
                     case DOUBLE :
@@ -365,6 +436,7 @@ public class Evaluator {
             default:
 
         }
+        return null;
     }
 
 

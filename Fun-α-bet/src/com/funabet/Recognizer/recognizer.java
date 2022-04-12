@@ -279,7 +279,7 @@ public class recognizer {
         else if (check(TokenType.TIMES)) return consume(TokenType.TIMES);
         else if (check(TokenType.DIVIDE)) return consume(TokenType.DIVIDE);
         else if (check(TokenType.MODULUS)) return consume(TokenType.MODULUS);
-        else error("binary Operator expected");
+        else error ("binary Operator expected");
         return null;
     }
 
