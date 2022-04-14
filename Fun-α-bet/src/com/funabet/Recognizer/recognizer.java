@@ -75,6 +75,7 @@ public class recognizer {
         else if (expressionPending()) return expression();
         else if (ifStatementPending()) return ifStatement();
         else if (arrayInitializationPending()) return arrayInitialization();
+        else if (primaryPending()) return primary();
         else error("expected statement");
         return null;
     }
@@ -163,6 +164,8 @@ public class recognizer {
         else if (check(TokenType.DOUBLE)) return consume(TokenType.DOUBLE);
         else if (check(TokenType.STRING)) return consume(TokenType.STRING);
         else if (check(TokenType.IDENTIFIER)) return consume(TokenType.IDENTIFIER);
+        else  if (check(TokenType.TRUE_KEYWORD)) return consume(TokenType.TRUE_KEYWORD);
+        else if (check(TokenType.FALSE_KEYWORD)) return consume(TokenType.FALSE_KEYWORD);
         else{ error("primary expected"); return null; }
     }
 
@@ -327,8 +330,9 @@ public class recognizer {
         Lexeme OP = consume(TokenType.O_PAREN);
         Lexeme Vinit = variableInitialization();
         Lexeme Semi1 = consume(TokenType.SEMI);
-        if(comparisonPending()) C = comparison();
-        else  Bool = booleanx();
+        if (comparisonPending()) {
+            C = comparison();
+
         Lexeme Semi2 = consume(TokenType.SEMI);
         Lexeme EX = expression();
         Lexeme CP = consume(TokenType.C_PAREN);
@@ -344,11 +348,38 @@ public class recognizer {
         Glue3.setRight(Vinit);
         Glue4.setLeft(Semi1);
         Glue4.setRight(C);
-        Glue5.setLeft(Semi2);
-        Glue5.setRight(EX);
-        Glue6.setLeft(OP);
-        Glue6.setRight(B);
-        return SE;
+
+            Glue5.setLeft(Semi2);
+            Glue5.setRight(EX);
+            Glue6.setLeft(OP);
+            Glue6.setRight(B);
+            return SE;
+    }
+        else {
+            Bool = booleanx();
+        Lexeme Semi2 = consume(TokenType.SEMI);
+        Lexeme EX = expression();
+        Lexeme CP = consume(TokenType.C_PAREN);
+        Lexeme B = block();
+
+        SE.setLeft(Glue1);
+        SE.setRight(Glue2);
+        Glue1.setLeft(Glue3);
+        Glue1.setRight(Glue4);
+        Glue2.setLeft(Glue5);
+        Glue2.setRight(Glue6);
+        Glue3.setLeft(OP);
+        Glue3.setRight(Vinit);
+        Glue4.setLeft(Semi1);
+        Glue4.setRight(Bool);
+
+            Glue5.setLeft(Semi2);
+            Glue5.setRight(EX);
+            Glue6.setLeft(OP);
+            Glue6.setRight(B);
+            return SE;
+        }
+
     }
 
     public Lexeme whileLoop() {
@@ -533,7 +564,7 @@ public class recognizer {
     }
 
    public boolean primaryPending() {
-        return check(TokenType.IDENTIFIER)|| check(TokenType.INTEGER) || check(TokenType.STRING) || check(TokenType.DOUBLE);
+        return check(TokenType.IDENTIFIER)|| check(TokenType.INTEGER) || check(TokenType.STRING) || check(TokenType.DOUBLE) || check(TokenType.TRUE_KEYWORD) || check(TokenType.FALSE_KEYWORD);
     }
 
     public boolean parameterPending() {

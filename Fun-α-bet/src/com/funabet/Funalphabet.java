@@ -88,7 +88,7 @@ public class Funalphabet {
         Evaluator Evaluator = new Evaluator();
         Lexeme a = recognizer.program();
         recognizer.printTree(a,0);
-        System.out.println(Evaluator.eval(a,new Enviroment("z")));
+        System.out.println(Evaluator.eval(a,global));
     }
 
 }

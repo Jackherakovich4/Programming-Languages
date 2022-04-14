@@ -62,7 +62,9 @@ public class Enviroment {
            }
        }
        if (x) {
-            return lookup;
+           return lookup;
+       } else if (base.getParent()==null) {
+           return null;
        } else {
            lookup(base.getParent(), lookup);
        }

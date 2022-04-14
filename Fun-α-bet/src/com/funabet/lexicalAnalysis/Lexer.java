@@ -239,7 +239,6 @@ public Lexer(String source) {
         else {advance();}
         advance();
         return new Lexeme(TokenType.STRING, lineNumber, source.substring(startOfCurrentLexeme+1,currentPosition-1));
-        //possible issue now TODO
     }
 
     private Lexeme lexIdentifierOrKeyword() {
