@@ -20,7 +20,8 @@ public class Evaluator {
             case ASSIGN:
                 return evalVarAssign (tree, enviroment);
 
-
+            case SQUIGGLE_EQUALS:
+                return evalForLoop (tree, enviroment);
             case INTEGER, DOUBLE, STRING:
                 return tree;
 
@@ -28,6 +29,11 @@ public class Evaluator {
                 return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), true);
             case FALSE_KEYWORD:
                 return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), false);
+
+            case RIGHT_ARROW:
+                return evalIfStatement(tree,enviroment);
+
+
 
 
             case IDENTIFIER :
@@ -53,8 +59,9 @@ public class Evaluator {
 
     Lexeme evalStatementlist(Lexeme tree, Enviroment enviroment) {
         if (tree == null) return null;
+        Lexeme toReturn = eval(tree.getRight(), enviroment);
         evalStatementlist(tree.getLeft(), enviroment);
-        return eval(tree.getRight(), enviroment);
+        return toReturn;
     }
 
     TokenType stupidHelperMethodForNegatives(Lexeme tree, Enviroment enviroment) {
@@ -470,20 +477,21 @@ public class Evaluator {
 
     Lexeme evalVarInit(Lexeme tree, Enviroment enviroment) {
         switch (tree.getLeft().getLeft().getType()) {
-            case INTEGER_KEYWORD: enviroment.insert(new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getLeft().getRight(),enviroment).getStringval()), new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight(),enviroment).getNumberval()));  return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight(),enviroment).getNumberval());
-            case STRING_KEYWORD: enviroment.insert(new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getLeft().getRight(),enviroment).getStringval()), new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getRight(),enviroment).getStringval())); return new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getRight(),enviroment).getStringval());
-            case BOOL_KEYWORD: enviroment.insert(new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getLeft().getRight(),enviroment).getStringval()), new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), eval(tree.getRight(),enviroment).getBoolval())); return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), eval(tree.getRight(),enviroment).getBoolval());
-            case REAL_KEYWORD: enviroment.insert(new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getLeft().getRight(),enviroment).getStringval()), new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getRight(),enviroment).getRealval())); return new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getRight(),enviroment).getRealval());
+            case INTEGER_KEYWORD: enviroment.insert(new Lexeme(TokenType.IDENTIFIER, tree.getLineNumber(), tree.getLeft().getRight().getStringval()), new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight(),enviroment).getNumberval())); return enviroment.lookup(enviroment, tree.getLeft().getRight());
+            case STRING_KEYWORD: enviroment.insert(new Lexeme(TokenType.IDENTIFIER, tree.getLineNumber(), tree.getLeft().getRight().getStringval()), new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getRight(),enviroment).getStringval())); return enviroment.lookup(enviroment, tree.getLeft().getRight());
+            case BOOL_KEYWORD: enviroment.insert(new Lexeme(TokenType.IDENTIFIER, tree.getLineNumber(), tree.getLeft().getRight().getStringval()), new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), eval(tree.getRight(),enviroment).getBoolval())); return enviroment.lookup(enviroment, tree.getLeft().getRight());
+            case REAL_KEYWORD: enviroment.insert(new Lexeme(TokenType.IDENTIFIER, tree.getLineNumber(), tree.getLeft().getRight().getStringval()), new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getRight(),enviroment).getRealval())); return enviroment.lookup(enviroment, tree.getLeft().getRight());
             default:return error("Invalid variable Initialization");
         }
 
     }
 
     Lexeme evalVarAssign (Lexeme tree, Enviroment enviroment) {
+        //TODO
         switch (tree.getRight().getType()) {
             case PLUSPLUS: switch (eval(tree.getRight().getRight(), enviroment).getType()) {
-                case INTEGER:enviroment.modify(eval(tree.getRight().getLeft(),enviroment), new Lexeme(TokenType.INTEGER, tree.getLineNumber(), enviroment.lookup(enviroment,eval(tree.getRight().getLeft(),enviroment)).getNumberval()+1)); return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), enviroment.lookup(enviroment,eval(tree.getRight().getLeft(),enviroment)).getNumberval()+1);
-                case DOUBLE:enviroment.modify(eval(tree.getRight().getLeft(),enviroment), new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), enviroment.lookup(enviroment,eval(tree.getRight().getLeft(),enviroment)).getRealval()+1)); return new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), enviroment.lookup(enviroment,eval(tree.getRight().getLeft(),enviroment)).getRealval()+1);
+                case INTEGER:enviroment.modify(tree.getRight().getLeft(), new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight().getLeft(),enviroment).getNumberval()+1)); System.out.println("hi"); return enviroment.lookup(enviroment, tree.getRight().getLeft());
+                case DOUBLE:enviroment.modify(tree.getRight().getLeft(), new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), enviroment.lookup(enviroment,eval(tree.getRight().getLeft(),enviroment)).getRealval()+1)); return new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), enviroment.lookup(enviroment,eval(tree.getRight().getLeft(),enviroment)).getRealval()+1);
                 default: return error("can't use unary op on that");
             }
             case MINUSMINUS:switch (eval(tree.getRight().getRight(), enviroment).getType()) {
@@ -492,17 +500,47 @@ public class Evaluator {
                 default: return error("can't use unary op on that");
             }
             case EQUALSASSIGN: switch (eval(tree.getRight().getRight(), enviroment).getType()) {
-                case INTEGER: enviroment.modify(eval(tree.getRight().getLeft(),enviroment), new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight().getLeft(),enviroment).getNumberval())); return new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight().getRight(),enviroment).getNumberval());
-                case DOUBLE: enviroment.modify(eval(tree.getRight().getLeft(),enviroment), new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getRight().getLeft(),enviroment).getNumberval())); return new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getRight().getRight(),enviroment).getNumberval());
-                case STRING:
-                case BOOLEAN:
+                case INTEGER: enviroment.modify(tree.getRight().getLeft(), new Lexeme(TokenType.INTEGER, tree.getLineNumber(), eval(tree.getRight().getRight(),enviroment).getNumberval())); return enviroment.lookup(enviroment, tree.getRight().getLeft());
+                case DOUBLE: enviroment.modify(tree.getRight().getLeft(), new Lexeme(TokenType.DOUBLE, tree.getLineNumber(), eval(tree.getRight().getRight(),enviroment).getRealval())); return enviroment.lookup(enviroment, tree.getRight().getLeft());
+                case STRING: enviroment.modify(tree.getRight().getLeft(), new Lexeme(TokenType.STRING, tree.getLineNumber(), eval(tree.getRight().getRight(),enviroment).getStringval())); return enviroment.lookup(enviroment, tree.getRight().getLeft());
+                case BOOLEAN: enviroment.modify(tree.getRight().getLeft(), new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), eval(tree.getRight().getRight(),enviroment).getBoolval())); return enviroment.lookup(enviroment, tree.getRight().getLeft());
                 default: return error("function lol");
             }
-            default:
+            default:return error("Invalid variable assignment");
+        }
+    }
 
+    Lexeme evalIfStatement(Lexeme tree, Enviroment enviroment) {
+        if (eval(tree.getLeft().getLeft().getRight(),enviroment).getBoolval()==true) {
+            return eval(tree.getLeft().getRight().getRight().getLeft(), enviroment);
+        } else if (eval(tree.getLeft().getLeft().getRight(),enviroment).getBoolval()==false) {
+            if (tree.getRight().getType() == TokenType.DOUBLE_RIGHT_ARROW) {
+                return evalIfStatement(tree.getRight().getLeft(), enviroment);
+            } else if (tree.getRight().getType() == TokenType.LEFT_ARROW) {
+                return evalElseStatement(tree.getRight(), enviroment);
+            }
+        } else {
+            return error("if statement must contain boolean in argument");
         }
         return null;
     }
+
+    Lexeme evalElseStatement(Lexeme tree, Enviroment enviroment) {
+        return eval(tree.getRight().getLeft(), enviroment);
+    }
+
+    Lexeme evalForLoop(Lexeme tree, Enviroment enviroment) {
+        Enviroment forLoop = new Enviroment(enviroment, "for");
+        evalVarInit(tree.getLeft().getLeft().getRight(), forLoop);
+
+        while (eval(tree.getLeft().getRight().getRight(), forLoop).getBoolval()) {
+            evalVarAssign (tree.getRight().getLeft().getRight() , forLoop);
+             eval (tree.getRight().getRight().getRight().getLeft(), forLoop);
+        }
+        forLoop.printEnviroment(forLoop);
+        return eval(tree.getLeft().getRight().getRight(), forLoop);
+    }
+
 
 
     Lexeme error(String message) {

@@ -89,6 +89,7 @@ public class Funalphabet {
         Lexeme a = recognizer.program();
         recognizer.printTree(a,0);
         System.out.println(Evaluator.eval(a,global));
+        //global.printEnviroment(global);
     }
 
 }

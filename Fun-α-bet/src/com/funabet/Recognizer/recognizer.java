@@ -334,7 +334,7 @@ public class recognizer {
             C = comparison();
 
         Lexeme Semi2 = consume(TokenType.SEMI);
-        Lexeme EX = expression();
+        Lexeme EX = assignment();
         Lexeme CP = consume(TokenType.C_PAREN);
         Lexeme B = block();
 

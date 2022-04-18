@@ -16,8 +16,8 @@ public class Enviroment {
    public Enviroment(Enviroment parent, String name) {
        this.parent=parent;
        this.name=name;
-       this.values = new ArrayList<Lexeme>();
-       this.indentifiers = new ArrayList<Lexeme>();
+       this.values = parent.values;
+       this.indentifiers = parent.indentifiers;
    }
 
    public Enviroment(String name) {
@@ -42,33 +42,37 @@ public class Enviroment {
    public void modify(Lexeme ID, Lexeme replacementVal) {
        int position=0;
        for (Lexeme lu : indentifiers) {
-           if (ID==lu) {
+           if (ID.getStringval().equals(lu.getStringval())) {
                break;
            } else if (position==indentifiers.size()-1) {
-               error("variable referenced not found");
+               error("variable referenced not found (mod)");
                return;
            }else {
                position++;
            }
        }
+
        values.set(position, replacementVal);
    }
 
    public Lexeme lookup(Enviroment base, Lexeme lookup) {
+       int position=0;
+
        boolean x=false;
        for (Lexeme lu : indentifiers) {
-           if (lu==lookup) {
+           if (lu.getStringval().equals(lookup.getStringval())) {
                x=true;
+               break;
            }
+
+           position++;
        }
        if (x) {
-           return lookup;
-       } else if (base.getParent()==null) {
-           return null;
-       } else {
-           lookup(base.getParent(), lookup);
+           return values.get(position);
+       } else if (base.getParent()!=null) {
+           return lookup(base.getParent(), lookup);
        }
-       error("Variable referenced not found");
+       error("Variable referenced not found (lu)");
        return null;
    }
 
