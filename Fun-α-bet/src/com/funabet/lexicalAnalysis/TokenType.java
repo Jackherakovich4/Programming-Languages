@@ -12,7 +12,6 @@ public enum TokenType {
     Ø,
     Ò,
     EOF,
-    A_CIRCLE_LIST,
 
 
 
@@ -59,6 +58,8 @@ public enum TokenType {
     GLUE,
     STATEMENT_LIST,
     ASSIGN,
+    CLOSURE,
+    CLOSURE_CALL,
 
 
 

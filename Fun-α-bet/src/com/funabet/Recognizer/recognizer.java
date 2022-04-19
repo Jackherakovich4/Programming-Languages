@@ -44,6 +44,8 @@ public class recognizer {
         return lexemes.get(nextLexemeIndex).getType() == expected;
     }
 
+
+
     //consumption functs
 
     public Lexeme program() {
@@ -82,16 +84,15 @@ public class recognizer {
 
     public Lexeme functionCall() {
         log ("functionCall");
-        Lexeme F = null;
+        Lexeme tree = new Lexeme(TokenType.CLOSURE_CALL, currentLexeme.getLineNumber());
+        Lexeme CP = null;
         Lexeme ID = consume(TokenType.IDENTIFIER);
-        Lexeme OP = consume(TokenType.O_PAREN);
-        if (functionInputPending()) {  F = functionInput();}
-        Lexeme CP = consume(TokenType.C_PAREN);
-        assert OP !=null;
-        OP.setLeft(ID);
-        OP.setRight(CP);
-        CP.setLeft(F);
-        return OP;
+        consume(TokenType.O_PAREN);
+        if (functionInputPending()) {  CP = functionInput();}
+        consume(TokenType.C_PAREN);
+        tree.setLeft(ID);
+        tree.setRight(CP);
+        return tree;
     }
 
     public Lexeme function() {
@@ -99,30 +100,60 @@ public class recognizer {
         Lexeme glue = new Lexeme(TokenType.GLUE, -1);
         Lexeme P = null;
         Lexeme CapPi = consume(TokenType.CAPITAL_PI);
+        Lexeme TYPE = null;
+        if(integerKeywordPending()) {
+            TYPE= consume(TokenType.INTEGER_KEYWORD);
+        } else if (stringKeywordPending()) {
+            TYPE = consume(TokenType.STRING_KEYWORD);
+        } else if (boolKeywordPending()) {
+            TYPE = consume(TokenType.BOOL_KEYWORD);
+        } else if (realKeywordPending()) {
+            TYPE= consume(TokenType.REAL_KEYWORD);
+        }else {
+            error("Function type not defined");
+        }
         Lexeme ID = consume(TokenType.IDENTIFIER);
-        Lexeme OP = consume(TokenType.O_PAREN);
+        consume(TokenType.O_PAREN);
+
         if(parameterPending()) P = parameter();
         Lexeme CP = consume(TokenType.C_PAREN);
         Lexeme B = block();
         CapPi.setRight(glue);
         CapPi.setLeft(ID);
-        ID.setLeft(OP);
+        ID.setLeft(TYPE);
         ID.setRight(CP);
-        glue.setRight(B);
+        glue.setLeft(B);
         glue.setRight(P);
         return CapPi;
     }
 
     public Lexeme parameter() {
         log("parameter");
-        if (functionPending()) return function();
-        else if (check(TokenType.IDENTIFIER)&&check(TokenType.COMMA)) {
+        Lexeme TYPE=null;
+        if(integerKeywordPending()) {
+            TYPE= consume(TokenType.INTEGER_KEYWORD);
+        } else if (stringKeywordPending()) {
+            TYPE = consume(TokenType.STRING_KEYWORD);
+        } else if (boolKeywordPending()) {
+            TYPE = consume(TokenType.BOOL_KEYWORD);
+        } else if (realKeywordPending()) {
+            TYPE= consume(TokenType.REAL_KEYWORD);
+        }else {
+            error("Function type not defined");
+        }
+        if (check(TokenType.IDENTIFIER)&&checkNext(TokenType.COMMA)) {
             Lexeme ID = consume(TokenType.IDENTIFIER);
-            Lexeme C = consume(TokenType.COMMA); parameter();
-            ID.setRight(C);
+            consume(TokenType.COMMA);
+            Lexeme P = parameter();
+            ID.setRight(TYPE);
+            ID.setLeft(P);
             return ID;
         }
-        else if (check(TokenType.IDENTIFIER)) return consume(TokenType.IDENTIFIER);
+        else if (check(TokenType.IDENTIFIER)) {
+            Lexeme ID = consume(TokenType.IDENTIFIER);
+            ID.setRight(TYPE);
+            return ID;
+        }
         else error("expected parameter");
         return null;
     }
@@ -146,12 +177,10 @@ public class recognizer {
         log("functionInput");
         if (primaryPending() && checkNext(TokenType.COMMA)) {
             Lexeme pri = primary();
-            Lexeme comma = consume(TokenType.COMMA);
+            consume(TokenType.COMMA);
             Lexeme FI = functionInput();
-
-            comma.setLeft(pri);
-            comma.setRight(FI);
-            return comma;
+            pri.setRight(FI);
+            return pri;
 
         }
         else if (primaryPending()) {Lexeme pri = primary(); return pri; }
@@ -568,7 +597,7 @@ public class recognizer {
     }
 
     public boolean parameterPending() {
-        return  (check(TokenType.IDENTIFIER) && checkNext(TokenType.COMMA)) ||check(TokenType.IDENTIFIER);
+        return  (check(TokenType.INTEGER_KEYWORD)|| check(TokenType.STRING_KEYWORD) || check(TokenType.BOOL_KEYWORD) || check(TokenType.REAL_KEYWORD) && checkNext(TokenType.IDENTIFIER));
     }
 
     public boolean elseStatementPending() {

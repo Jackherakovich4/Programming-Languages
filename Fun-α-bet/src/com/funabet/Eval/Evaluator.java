@@ -4,6 +4,8 @@ import com.funabet.Enviroment;
 import com.funabet.lexicalAnalysis.Lexeme;
 import com.funabet.lexicalAnalysis.TokenType;
 
+import java.util.ArrayList;
+
 public class Evaluator {
 
     public Lexeme eval(Lexeme tree, Enviroment enviroment) {
@@ -22,19 +24,30 @@ public class Evaluator {
 
             case SQUIGGLE_EQUALS:
                 return evalForLoop (tree, enviroment);
+
             case INTEGER, DOUBLE, STRING:
                 return tree;
 
             case TRUE_KEYWORD:
                 return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), true);
+
             case FALSE_KEYWORD:
                 return new Lexeme(TokenType.BOOLEAN, tree.getLineNumber(), false);
 
             case RIGHT_ARROW:
                 return evalIfStatement(tree,enviroment);
 
+            case DIAMOND:
+                return evalWhileLoop(tree, enviroment);
 
+            case INFINITY:
+                return evalInfiniteLoop(tree, enviroment);
 
+            case CAPITAL_PI:
+                return evalClosure(tree,enviroment);
+
+            case CLOSURE_CALL:
+                return evalClosureCall(tree, enviroment);
 
             case IDENTIFIER :
                 if (enviroment.lookup(enviroment, tree)!=null) {
@@ -537,11 +550,64 @@ public class Evaluator {
             evalVarAssign (tree.getRight().getLeft().getRight() , forLoop);
              eval (tree.getRight().getRight().getRight().getLeft(), forLoop);
         }
-        forLoop.printEnviroment(forLoop);
         return eval(tree.getLeft().getRight().getRight(), forLoop);
     }
 
+    Lexeme evalWhileLoop(Lexeme tree, Enviroment enviroment){
+        Enviroment whileLoop = new Enviroment(enviroment, "while");
+        while (eval(tree.getLeft().getRight(), whileLoop).getBoolval()) {
+            eval (tree.getRight().getRight().getLeft(), whileLoop);
+        }
+        return eval(tree.getLeft().getRight().getRight(), whileLoop);
+    }
 
+    Lexeme evalInfiniteLoop (Lexeme tree, Enviroment enviroment) {
+
+        while (true) {
+            eval(tree.getRight().getLeft(), enviroment);
+        }
+
+    }
+
+    Lexeme evalClosure (Lexeme tree, Enviroment enviroment) {
+
+        ArrayList<Lexeme> paramList = new ArrayList<Lexeme>();
+        if (tree!=null) {
+            paramList.add(tree.getRight().getRight());
+        }
+        ArrayList<Lexeme> temp = evalParamlist(tree.getRight().getLeft() , enviroment, paramList );
+        enviroment.insert(tree.getLeft(), new Lexeme(TokenType.CLOSURE, temp, tree.getRight().getLeft().getLeft()));
+        return enviroment.lookup(enviroment, tree.getLeft());
+    }
+
+    ArrayList<Lexeme> evalParamlist(Lexeme tree, Enviroment enviroment, ArrayList<Lexeme> returnList) {
+        returnList.add(tree);
+        if (tree.getLeft()!=null) {
+            evalParamlist(tree.getLeft(), enviroment , returnList);
+        }
+        return returnList;
+    }
+
+    Lexeme evalClosureCall (Lexeme tree, Enviroment enviroment) {
+        Enviroment function = new Enviroment(enviroment, "func");
+        Lexeme functionToRun = enviroment.lookup(enviroment, tree.getLeft());
+        if (functionToRun==null) {
+            return error("function referenced not found");
+        }
+        int count=0;
+        for (Lexeme parameter: functionToRun.getParams()) {
+            Lexeme val = tree.getRight();
+            for (int i = 0; i<count; i++) {
+                if (val==null) {
+                    return error("not enough parameters given");
+                }
+                val=val.getRight();
+            }
+            function.insert(parameter, val);
+            count++;
+        }
+        return eval(functionToRun.getStatementList(), enviroment);
+    }
 
     Lexeme error(String message) {
         System.out.println(message);

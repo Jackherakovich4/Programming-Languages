@@ -1,5 +1,7 @@
 package com.funabet.lexicalAnalysis;
 
+import java.util.ArrayList;
+
 public class Lexeme {
     // --------------- Instance Variables ---------------
     // Every com.Funαbet.com.funalphabet.lexicalAnalysis.com.funabet.lexicalAnalysis.Lexeme has both of these:
@@ -13,6 +15,8 @@ public class Lexeme {
     private Lexeme right;
     private Double realval;
     private Boolean boolval;
+    private ArrayList<Lexeme> Params;
+    private Lexeme StatementList;
 
 
     // --------------- Constructors ---------------
@@ -26,6 +30,12 @@ public class Lexeme {
         this.type=type;
         this.lineNumber=lineNumber;
         this.stringval=stringval;
+    }
+
+    public Lexeme (TokenType type, ArrayList<Lexeme> Params, Lexeme StatementList) {
+        this.type=type;
+        this.Params=Params;
+        this.StatementList=StatementList;
     }
 
 
@@ -56,6 +66,14 @@ public class Lexeme {
 
     public int getLineNumber() {
         return lineNumber;
+    }
+
+    public ArrayList<Lexeme> getParams() {
+        return Params;
+    }
+
+    public Lexeme getStatementList() {
+        return StatementList;
     }
 
     public void setLeft(Lexeme left) {
