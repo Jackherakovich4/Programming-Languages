@@ -9,6 +9,11 @@ Variables in this language are initialized using the upside down exclamaiton mar
 
 ``` ¡int x=10```
 
+##Comments
+Create comments by creating a stand-alone string like this:
+
+```"this is a comment"```
+
 ## Functions
 Functions are created by announcing them with the capital pi symbol "∏". You first announce the function, give it a return type, then give it a name, then parameters in parantheses, then finally an upside down question mark to begin the function "¿" the function is then ended by the question mark symbol "?" (as curly braces do in java).
 
